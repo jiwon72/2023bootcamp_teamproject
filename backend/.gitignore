@@ -25,3 +25,6 @@ yarn.lock
 # Other OS generated files
 Thumbs.db
 .DS_Store
+
+#goorm ide setting
+goorm.manifest
