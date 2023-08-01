@@ -1,35 +1,28 @@
-// app.js 또는 다른 파일에 코드를 작성합니다.
+// Import required modules
 const express = require('express');
-const mysql = require('mysql2');
-const dotenv = require('dotenv'); // .env 파일을 읽기 위해 dotenv 패키지를 사용합니다.
+//HTTP 응답을 받기 위한 모듈
+const bodyParser = require('body-parser');
+// server log를 위한 모듈
+const morgan = require('morgan');
 
+
+// Create the Express app
 const app = express();
-dotenv.config(); // .env 파일을 읽어서 환경 변수로 설정합니다.
 
-// MySQL 연결 정보 설정
-const dbConfig = {
-  host: process.env.DB_HOST, // 환경 변수를 사용하여 DB 정보를 불러옵니다.
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-};
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-// MySQL과의 연결 생성
-const connection = mysql.createConnection(dbConfig);
+// Define your routes and APIs here
+// Mount the login router
+const loginRouter = require('./routes/login');
+app.use('/api/login', loginRouter);
 
-// MySQL 연결 테스트
-connection.connect((err) => {
-  if (err) { 
-    console.error('MySQL connection failed:', err);
-  } else {
-    console.log('Connected to MySQL database!');
-  }
-});
-
-// Express 앱의 라우트 설정 등을 진행하면 됩니다.
-
-// 서버 시작
+app.get('/',(req,res)=>{
+    res.send("hello express");
+})
+// Start the server
 const port = 3000;
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
