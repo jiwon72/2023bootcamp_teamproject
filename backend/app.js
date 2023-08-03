@@ -30,17 +30,16 @@ app.use(
   })
 );
 
-//허가 host 주소
-const allowedOrigins = ["https://moviefinder.run.goorm.site:3000"];
-
 // 로그인 api 함수 등록
 const loginRouter = require("./DongUk/routes/login");
 const logoutRouter = require("./DongUk/routes/logout");
 const registerRouter = require("./DongUk/routes/register");
+const searchRouter = require("./DongUk/routes/search"); // Import the search router
 
 app.use("/auth/logout", logoutRouter);
 app.use("/auth/login", loginRouter);
 app.use("/auth/register", registerRouter); // Add the register route
+app.use("/search", searchRouter); // Register the search route
 
 app.get("/", (req, res) => {
   if (req.session.num === undefined)
