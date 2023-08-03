@@ -1,0 +1,27 @@
+{
+  "name": "moviefinder",
+  "version": "1.0.0",
+  "description": "sme_bootcamp project Moviefinder",
+  "main": "app.js",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "memorystore": "^1.6.7",
+    "mysql2": "^3.5.2",
+    "nodemon": "^3.0.1",
+    "pm2": "^5.3.0",
+    "request": "^2.88.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "morgan": "^1.10.0"
+  }
+}
