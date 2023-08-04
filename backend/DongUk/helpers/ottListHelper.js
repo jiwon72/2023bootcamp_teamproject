@@ -2,7 +2,7 @@ const ExcelJS = require("exceljs");
 
 //EXCELJS의 문제로 인해 절대 경로만 사용 가능
 const PATH =
-  "D:\\workspace\\2023BOOTCAMP_TEAMPROJECT\\backend\\DongUk\\movie_info\\movies.xlsx";
+  "D:\\workspace\\2023BOOTCAMP_TEAMPROJECT\\backend\\DongUk\\movie_info\\movieOTT.xlsx";
 
 async function getOttList(englishTitle, korTitle) {
   console.log(
