@@ -2,14 +2,19 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
+const ExcelJS = require("exceljs");
+const { getOttList } = require("../helpers/ottListHelper");
+
 require("dotenv").config();
 
 const LANGUAGE = "ko-KR";
 TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN;
-TMDB_ACCESS_TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MDkyM2UyOWIxOTZmZWMwYjIzYmZlYjgzOGI4OGI0YSIsInN1YiI6IjY0Y2I0Nzc1NDNjZDU0MDBhZGQ1OGQ5MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.AgdF46090Q1qDIZE2ZGZ1ngQ0eRloYDsOxpwuXD3vdU";
+//EXCELJS의 문제로 인해 절대 경로로만 OTT정보 엑셀파일 경로 지정
+PATH =
+  "D:\\workspace\\2023BOOTCAMP_TEAMPROJECT\\backend\\DongUk\\movie_info\\movies.xlsx";
 
 router.get("/movie", async function (req, res) {
+  getOttList();
   const query = req.query.query;
   const page = req.query.page || 1;
   console.log(TMDB_ACCESS_TOKEN);
@@ -48,14 +53,23 @@ router.get("/movie", async function (req, res) {
     const details = await Promise.all(detailsPromises);
 
     // 중복되는 정보를 제거하고 세부 정보만 포함
-    const combinedResults = details.map((detail, index) => {
-      return detail.data; // 세부 정보만 반환
-    });
+    const combinedResults = await Promise.all(
+      details.map(async (detail, index) => {
+        // console.log("detail", detail.data);
+        kortitle = detail.data.title;
+        engtitle = detail.data.original_title;
+        const ottList = await getOttList(engtitle, kortitle);
+        console.log("ottList", ottList);
+        return {
+          ...detail.data,
+          ottList,
+        };
+      })
+    );
 
     res.status(200).json(combinedResults);
   } catch (error) {
     res.status(error.response ? error.response.status : 500).end();
-    console.error("Error Response:", error.response.data);
     console.log("error =", error.response ? error.response.status : error);
   }
 });
