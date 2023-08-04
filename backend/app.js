@@ -37,12 +37,14 @@ const logoutRouter = require("./DongUk/routes/logout");
 const registerRouter = require("./DongUk/routes/register");
 const searchRouter = require("./DongUk/routes/search"); // Import the search router
 const nowMoviesRouter = require("./DongUk/routes/nowPlayMovie"); // movies.js 파일에서 라우터 가져오기
+const popularMoviesRouter = require("./DongUk/routes/popularMovie"); // popularMovie.js 파일에서 라우터 가져오기
 
 app.use("/auth/logout", logoutRouter);
 app.use("/auth/login", loginRouter);
 app.use("/auth/register", registerRouter); // Add the register route
 app.use("/search", searchRouter); // Register the search route
 app.use("/movies", nowMoviesRouter); // '/movies' 경로에 라우터 적용
+app.use("/movies", popularMoviesRouter); // '/movies' 경로에 라우터 적용
 
 app.get("/", (req, res) => {
   if (req.session.num === undefined)
