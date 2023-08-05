@@ -41,6 +41,7 @@ router.post("/", (req, res) => {
     userID,
     likeOTTs,
     likeGenres,
+    isDark: false,
   };
   users.push(newUser);
 

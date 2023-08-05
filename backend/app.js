@@ -31,28 +31,29 @@ app.use(
   })
 );
 
-// 로그인 api 함수 등록
+//  api 함수 등록
 const loginRouter = require("./DongUk/routes/login");
 const logoutRouter = require("./DongUk/routes/logout");
 const registerRouter = require("./DongUk/routes/register");
 const searchRouter = require("./DongUk/routes/search"); // Import the search router
 const nowMoviesRouter = require("./DongUk/routes/nowPlayMovie"); // movies.js 파일에서 라우터 가져오기
 const popularMoviesRouter = require("./DongUk/routes/popularMovie"); // popularMovie.js 파일에서 라우터 가져오기
+const isDarkRouter = require("./DongUk/routes/isDark"); // isDark.js 파일에서 라우터 가져오기
 
 app.use("/auth/logout", logoutRouter);
 app.use("/auth/login", loginRouter);
 app.use("/auth/register", registerRouter); // Add the register route
 app.use("/search", searchRouter); // Register the search route
-app.use("/movies", nowMoviesRouter); // '/movies' 경로에 라우터 적용
-app.use("/movies", popularMoviesRouter); // '/movies' 경로에 라우터 적용
+app.use("/movies", nowMoviesRouter); // '/movies/latest' 경로에 라우터 적용
+app.use("/movies", popularMoviesRouter); // '/movies/popluar' 경로에 라우터 적용
+app.use("/users/isDark", isDarkRouter); // '/routes/isDark' 경로에 라우터 적용
 
 app.get("/", (req, res) => {
   if (req.session.num === undefined)
     // 세션이 없다면
     req.session.num = 1; // 세션 등록
   else req.session.num += 1;
-
-  res.send(`${req.session.num}번 접속`);
+  res.send(JSON.stringify(req.session));
 });
 // Start the server
 const port = 3000;
