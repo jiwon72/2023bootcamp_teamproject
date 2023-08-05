@@ -39,14 +39,19 @@ const searchRouter = require("./DongUk/routes/search"); // Import the search rou
 const nowMoviesRouter = require("./DongUk/routes/nowPlayMovie"); // movies.js 파일에서 라우터 가져오기
 const popularMoviesRouter = require("./DongUk/routes/popularMovie"); // popularMovie.js 파일에서 라우터 가져오기
 const isDarkRouter = require("./DongUk/routes/isDark"); // isDark.js 파일에서 라우터 가져오기
+const setDarkRouter = require("./DongUk/routes/setDark"); // isDark.js 파일에서 라우터 가져오기
 
+//회원가입 로그인 로그아웃 관련 api
 app.use("/auth/logout", logoutRouter);
 app.use("/auth/login", loginRouter);
 app.use("/auth/register", registerRouter); // Add the register route
+//영화 관련 api
 app.use("/search", searchRouter); // Register the search route
 app.use("/movies", nowMoviesRouter); // '/movies/latest' 경로에 라우터 적용
 app.use("/movies", popularMoviesRouter); // '/movies/popluar' 경로에 라우터 적용
+//다크모드 관련 api
 app.use("/users/isDark", isDarkRouter); // '/routes/isDark' 경로에 라우터 적용
+app.use("/users/setDark", setDarkRouter); // '/routes/setDark' 경로에 라우터 적용
 
 app.get("/", (req, res) => {
   if (req.session.num === undefined)

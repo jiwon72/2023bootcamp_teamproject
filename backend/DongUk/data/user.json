@@ -4,13 +4,20 @@
     "password": "password3",
     "nickname": "James",
     "userID": "user3",
-    "isDark": true
+    "isDark": false
   },
   {
     "username": "banana",
     "password": "password1",
     "nickname": "James",
     "userID": "user1",
+    "isDark": false
+  },
+  {
+    "username": "tomato",
+    "password": "password2",
+    "nickname": "Jane",
+    "userID": "user2",
     "isDark": false
   }
 ]
