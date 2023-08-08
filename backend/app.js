@@ -45,6 +45,7 @@ const favoritesRouter = require("./DongUk/routes/addfavorites"); // favorites.js
 const removeFavoritesRouter = require("./DongUk/routes/removefavorites"); // favorites.js 파일에서 라우터 가져오기
 const showFavoritesRouter = require("./DongUk/routes/showfavorites"); // favorites.js 파일에서 라우터 가져오기
 const reviewRouter = require("./DongUk/routes/review"); // review.js 파일에서 라우터 가져오기
+const QnARouter = require("./DongUk/routes/questions"); // QnA.js 파일에서 라우터 가져오기
 
 //회원가입 로그인 로그아웃 관련 api
 app.use("/auth/logout", logoutRouter);
@@ -64,7 +65,8 @@ app.use("/users/removefavorites", removeFavoritesRouter); // '/routes/removefavo
 app.use("/users/favorites", showFavoritesRouter); // '/routes/showfavorites' 경로에 라우터 적용
 //리뷰 관련 api
 app.use("/", reviewRouter); // '/routes/review' 경로에 라우터 적용
-
+//QnA 관련 api
+app.use("/", QnARouter); // '/routes/question' 경로에 라우터 적용
 app.get("/", (req, res) => {
   if (req.session.num === undefined)
     // 세션이 없다면
