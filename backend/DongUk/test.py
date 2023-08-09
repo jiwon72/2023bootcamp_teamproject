@@ -63,13 +63,17 @@ def get_provider_name():
 def get_movie_names(provider_name):
     provider_name=provider_name.replace(" ","-")
     # hormeDriver를 통해서 html 소스 불러오기
-    url = "https://www.justwatch.com/kr/%EB%8F%99%EC%98%81%EC%83%81%EC%84%9C%EB%B9%84%EC%8A%A4/"+provider_name+"/"
+    tempurl = "https://www.justwatch.com/kr/%EB%8F%99%EC%98%81%EC%83%81%EC%84%9C%EB%B9%84%EC%8A%A4/"+provider_name+"/"
+    url="https://www.justwatch.com/kr/%EB%8F%99%EC%98%81%EC%83%81%EC%84%9C%EB%B9%84%EC%8A%A4"+"/"+provider_name+"/%EC%98%81%ED%99%94%EC%82%B0%EC%97%85/"
+    url="https://www.justwatch.com/kr/%EB%8F%99%EC%98%81%EC%83%81%EC%84%9C%EB%B9%84%EC%8A%A4/"+provider_name+"/%EC%98%81%ED%99%94%EC%82%B0%EC%97%85"
+
+    print("url"+url)
     driver = set_chrome_driver()
     driver.get(url=url)
 
     #스크롤 수행
     # 스크롤 다운을 몇 번 수행할지 결정 (예: 5번)
-    for _ in range(3):
+    for _ in range(10):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(1)  # 스크롤 다운 후 페이지 로딩 대기
         
@@ -86,20 +90,22 @@ def get_movie_names(provider_name):
         movie_name_v2=movie_img_element['alt']
         movie_title_list.append(movie_name_v2)
         
-    #for eng title about movie
-    movie_elements = soup.select(".title-list-grid__item--link")
-    movie_eng_list = []
-    for movie_img_element in movie_img_elements:
-        movie_name_v2=movie_img_element['href']+"/"
+    # #for eng title about movie
+    # movie_elements = soup.select(".title-list-grid__item--link")
+    # movie_eng_list = []
+    # for movie_img_element in movie_img_elements:
+    #     movie_name_v2=movie_img_element['href']+"/"
         
-        movie_eng_list.append(extract_string(movie_name_v2))
+    #     movie_eng_list.append(extract_string(movie_name_v2))
     
-    return movie_eng_list, movie_eng_list
+    return movie_title_list
 
 def get_movie_links(provider_name):
-     provider_name=provider_name.replace(" ","-")
+    provider_name=provider_name.replace(" ","-")
     # hormeDriver를 통해서 html 소스 불러오기
-    url = "https://www.justwatch.com/kr/%EB%8F%99%EC%98%81%EC%83%81%EC%84%9C%EB%B9%84%EC%8A%A4/"+provider_name+"/"
+    tempurl = "https://www.justwatch.com/kr/%EB%8F%99%EC%98%81%EC%83%81%EC%84%9C%EB%B9%84%EC%8A%A4/"+provider_name+"/"
+    url="https://www.justwatch.com/kr/%EB%8F%99%EC%98%81%EC%83%81%EC%84%9C%EB%B9%84%EC%8A%A4"+"/"+provider_name+"/%EC%98%81%ED%99%94%EC%82%B0%EC%97%85/"
+
     driver = set_chrome_driver()
     driver.get(url=url)   
     html = driver.page_source
