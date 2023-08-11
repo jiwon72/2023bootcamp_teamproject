@@ -4,6 +4,7 @@
     "password": "password4",
     "nickname": "bubble",
     "userID": "user3",
+    "email" : "sfasf@nave.com",
     "isDark": false
   },
   {
@@ -11,6 +12,7 @@
     "password": "password1",
     "nickname": "James",
     "userID": "user1",
+    "email" : "sfasf@nave.com",
     "isDark": false
   },
   {
@@ -18,6 +20,7 @@
     "password": "password2",
     "nickname": "Jane",
     "userID": "user2",
+    "email" : "sfasf@nave.com",
     "isDark": false
   }
 ]
