@@ -3,8 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const cors = require("cors");
-require("dotenv").config();
+
 
 // Create the Express app
 const app = express();
@@ -46,6 +45,8 @@ const removeFavoritesRouter = require("./DongUk/routes/removefavorites"); // fav
 const showFavoritesRouter = require("./DongUk/routes/showfavorites"); // favorites.js 파일에서 라우터 가져오기
 const reviewRouter = require("./DongUk/routes/review"); // review.js 파일에서 라우터 가져오기
 const QnARouter = require("./DongUk/routes/questions"); // QnA.js 파일에서 라우터 가져오기
+const personalRoute = require('./routes/personal'); // 회원정보 받아오기
+const personalChangeRoute = require('./routes/personalChange'); // 회원정보 수정하기
 
 //회원가입 로그인 로그아웃 관련 api
 app.use("/auth/logout", logoutRouter);
@@ -67,6 +68,10 @@ app.use("/users/favorites", showFavoritesRouter); // '/routes/showfavorites' 경
 app.use("/", reviewRouter); // '/routes/review' 경로에 라우터 적용
 //QnA 관련 api
 app.use("/", QnARouter); // '/routes/question' 경로에 라우터 적용
+// '/routes/personal' 경로에 라우터 적용 -> 회원정보 불러오기
+app.use('/users', personalRoute); 
+app.use('/users', personalChangeRoute);
+
 app.get("/", (req, res) => {
   if (req.session.num === undefined)
     // 세션이 없다면
@@ -74,6 +79,8 @@ app.get("/", (req, res) => {
   else req.session.num += 1;
   res.send(JSON.stringify(req.session));
 });
+
+
 // Start the server
 const port = 3000;
 app.listen(port, () => {
