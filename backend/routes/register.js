@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+const getConnection = require("../data/DBpool.js");
 
 const storagePath = path.join(__dirname, "../data");
 const userFilePath = path.join(storagePath, "user.json");
@@ -19,8 +20,15 @@ const readUsers = () => {
 
 // Registration route
 router.post("/", (req, res) => {
-  const { username, password, nickname, userID, likeOTTs, likeGenres } =
-    req.body;
+  const {
+    username,
+    password,
+    nickname,
+    birthdate,
+    userID,
+    likeOTTs,
+    likeGenres,
+  } = req.body;
 
   // Read existing users from the JSON file
   const users = readUsers();
@@ -41,7 +49,7 @@ router.post("/", (req, res) => {
     userID,
     likeOTTs,
     likeGenres,
-    isDark: false,
+    birthdate,
   };
   users.push(newUser);
 
@@ -62,6 +70,21 @@ router.post("/", (req, res) => {
       });
     }
   });
+
+  //use DataBase
+  // const query =
+  //   "INSERT INTO user (user_Name, user_Password, NickName, birthday, user_ID) VALUES (?, ?, ?, ?, ?)";
+  // const values = [username, password, nickname, birthdate, userID];
+  // const db = getConnection((conn) =>
+  //   conn.query(query, values, (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //       res.status(500).send("An error occurred");
+  //       return;
+  //     }
+  //     res.status(200).send("User registered");
+  //   })
+  // );
 });
 
 module.exports = router;

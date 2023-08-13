@@ -4,20 +4,25 @@
     "password": "password4",
     "nickname": "bubble",
     "userID": "user3",
-    "isDark": false
+    "birthdate": "1999-01-01",
+    "likeOtts": [],
+    "likeGenres": []
   },
   {
     "username": "banana",
     "password": "password1",
     "nickname": "James",
     "userID": "user1",
-    "isDark": false
+    "birthdate": "1999-01-01",
+    "likeOtts": [],
+    "likeGenres": []
   },
   {
     "username": "tomato",
     "password": "password2",
     "nickname": "Jane",
     "userID": "user2",
-    "isDark": false
+    "likeOtts": [],
+    "likeGenres": []
   }
 ]
