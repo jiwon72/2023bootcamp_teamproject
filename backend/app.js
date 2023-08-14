@@ -30,25 +30,56 @@ app.use(
   })
 );
 
-// 로그인 api 함수 등록
-const loginRouter = require("./DongUk/routes/login");
-const logoutRouter = require("./DongUk/routes/logout");
-const registerRouter = require("./DongUk/routes/register");
-const searchRouter = require("./DongUk/routes/search"); // Import the search router
+//  api 함수 등록
+const loginRouter = require("./routes/login");
+const logoutRouter = require("./routes/logout");
+const registerRouter = require("./routes/register");
+const searchRouter = require("./routes/search"); // Import the search router
+const nowMoviesRouter = require("./routes/nowPlayMovie"); // movies.js 파일에서 라우터 가져오기
+const popularMoviesRouter = require("./routes/popularMovie"); // popularMovie.js 파일에서 라우터 가져오기
+const isDarkRouter = require("./routes/isDark"); // isDark.js 파일에서 라우터 가져오기
+const setDarkRouter = require("./routes/setDark"); // isDark.js 파일에서 라우터 가져오기
+const detailMovieRouter = require("./routes/detailMovie"); // detailMovie.js 파일에서 라우터 가져오기
+const favoritesRouter = require("./routes/addfavorites"); // favorites.js 파일에서 라우터 가져오기
+const removeFavoritesRouter = require("./routes/removefavorites"); // favorites.js 파일에서 라우터 가져오기
+const showFavoritesRouter = require("./routes/showfavorites"); // favorites.js 파일에서 라우터 가져오기
+const reviewRouter = require("./routes/review"); // review.js 파일에서 라우터 가져오기
+const QnARouter = require("./routes/questions"); // QnA.js 파일에서 라우터 가져오기
+const personalRoute = require("./routes/personal"); // 회원정보 받아오기
+const personalChangeRoute = require("./routes/personalChange"); // 회원정보 수정하기
 
+//회원가입 로그인 로그아웃 관련 api
 app.use("/auth/logout", logoutRouter);
 app.use("/auth/login", loginRouter);
 app.use("/auth/register", registerRouter); // Add the register route
+//영화 관련 api
 app.use("/search", searchRouter); // Register the search route
+app.use("/movies", nowMoviesRouter); // '/movies/latest' 경로에 라우터 적용
+app.use("/movies", popularMoviesRouter); // '/movies/popluar' 경로에 라우터 적용
+app.use("/movies", detailMovieRouter); // '/movies/:movieID' 경로에 라우터 적용
+//다크모드 관련 api
+app.use("/users/isDark", isDarkRouter); // '/routes/isDark' 경로에 라우터 적용
+app.use("/users/setDark", setDarkRouter); // '/routes/setDark' 경로에 라우터 적용
+//즐겨찾기 관련 api
+app.use("/users/addfavorites", favoritesRouter); // '/routes/favorites' 경로에 라우터 적용
+app.use("/users/removefavorites", removeFavoritesRouter); // '/routes/removefavorites' 경로에 라우터 적용
+app.use("/users/favorites", showFavoritesRouter); // '/routes/showfavorites' 경로에 라우터 적용
+//리뷰 관련 api
+app.use("/", reviewRouter); // '/routes/review' 경로에 라우터 적용
+//QnA 관련 api
+app.use("/", QnARouter); // '/routes/question' 경로에 라우터 적용
+// '/routes/personal' 경로에 라우터 적용 -> 회원정보 불러오기
+app.use("/users", personalRoute);
+app.use("/users", personalChangeRoute);
 
 app.get("/", (req, res) => {
   if (req.session.num === undefined)
     // 세션이 없다면
     req.session.num = 1; // 세션 등록
   else req.session.num += 1;
-
-  res.send(`${req.session.num}번 접속`);
+  res.send(JSON.stringify(req.session));
 });
+
 // Start the server
 const port = 3000;
 app.listen(port, () => {

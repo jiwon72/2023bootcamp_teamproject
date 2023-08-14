@@ -1,0 +1,28 @@
+[
+  {
+    "username": "apple",
+    "password": "newPassword7",
+    "nickname": "messi",
+    "userID": "user3",
+    "birthdate": "1999-01-01",
+    "likeOtts": [],
+    "likeGenres": []
+  },
+  {
+    "username": "banana",
+    "password": "password1",
+    "nickname": "James",
+    "userID": "user1",
+    "birthdate": "1999-01-01",
+    "likeOtts": [],
+    "likeGenres": []
+  },
+  {
+    "username": "tomato",
+    "password": "password2",
+    "nickname": "Jane",
+    "userID": "user2",
+    "likeOtts": [],
+    "likeGenres": []
+  }
+]
