@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+const getConnection = require("../data/DBpool.js");
 
 const storagePath = path.join(__dirname, "../data");
 const userFilePath = path.join(storagePath, "user.json");
@@ -17,10 +18,42 @@ const readUsers = () => {
   }
 };
 
+// 아이디 중복 확인용 api
+router.post("/check", (req, res) => {
+  const { userID } = req.body;
+  const query = "SELECT * FROM user WHERE user_ID = ?";
+  const values = [userID];
+  const db = getConnection((conn) =>
+    conn.query(query, values, (err, result) => {
+      conn.release();
+
+      if (err) {
+        console.log(err);
+        res.status(500).send("An error occurred");
+        return;
+      }
+      if (result.length === 0) {
+        res.status(200).json({ message: "User not found", isDuplicate: false });
+      } else {
+        res
+          .status(409)
+          .json({ message: "Same userID exists", isDuplicate: true });
+      }
+    })
+  );
+});
+
 // Registration route
 router.post("/", (req, res) => {
-  const { username, password, nickname, userID, likeOTTs, likeGenres } =
-    req.body;
+  const {
+    username,
+    password,
+    nickname,
+    birthdate,
+    userID,
+    likeOTTs,
+    likeGenres,
+  } = req.body;
 
   // Read existing users from the JSON file
   const users = readUsers();
@@ -41,7 +74,7 @@ router.post("/", (req, res) => {
     userID,
     likeOTTs,
     likeGenres,
-    isDark: false,
+    birthdate,
   };
   users.push(newUser);
 
@@ -62,6 +95,21 @@ router.post("/", (req, res) => {
       });
     }
   });
+
+  //use DataBase
+  // const query =
+  //   "INSERT INTO user (user_Name, user_Password, NickName, birthday, user_ID) VALUES (?, ?, ?, ?, ?)";
+  // const values = [username, password, nickname, birthdate, userID];
+  // const db = getConnection((conn) =>
+  //   conn.query(query, values, (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //       res.status(500).send("An error occurred");
+  //       return;
+  //     }
+  //     res.status(200).send("User registered");
+  //   })
+  // );
 });
 
 module.exports = router;

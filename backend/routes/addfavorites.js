@@ -5,6 +5,7 @@ const path = require("path");
 
 const storagePath = path.join(__dirname, "../data");
 const userFilePath = path.join(storagePath, "favorite.json");
+const getConnection = require("../data/DBpool.js");
 
 // Function to read users from the JSON file
 const readFavorites = () => {
@@ -25,7 +26,8 @@ router.post("/", (req, res) => {
       .status(401)
       .json({ isRegistered: false, message: "session expired login please" });
   }
-  // Read existing users from the JSON file
+
+  //파일을 통해 즐겨찾기 구현 DB사용시 아래 코드 주석처리
   let favorites = readFavorites();
   console.log("beforeFavorites", favorites);
   //check if the movieID already exists in the favorites array
@@ -49,7 +51,6 @@ router.post("/", (req, res) => {
       .status(409)
       .json({ isRegistered: false, message: "movieID already exists" });
   }
-
   // Save the new user in the users array
   favorites[userIndex].favoriteList.push(req.body.movieId);
   // Write the updated users array to the JSON file
@@ -69,6 +70,46 @@ router.post("/", (req, res) => {
       });
     }
   });
+
+  // DB와 연결 코드 사용 시 위 코드 주석 처리 하고 아래 코드 주석 해제
+  // const checkQuery =
+  //   "SELECT * FROM MoviesMark WHERE Movie_Movie_ID = ? AND user_user_ID = ?";
+  // const checkValues = [req.body.movieId, userSession.userID];
+  // getConnection((conn) => {
+  //   conn.query(checkQuery, checkValues, (err, result) => {
+  //     if (err) {
+  //       console.error(err);
+  //       res.status(500).send("An error occurred");
+  //       conn.release();
+  //       return;
+  //     }
+  //     if (result.length > 0) {
+  //       res.status(409).json({
+  //         isSuccess: false,
+  //         message: "movieID already exists in MoviesMark",
+  //       });
+  //       conn.release();
+  //     } else {
+  //       // Add movie to user's favorites
+  //       const addQuery =
+  //         "INSERT INTO MoviesMark (Movie_Movie_ID, user_user_ID, CreateDate) VALUES (?, ?, NOW())";
+  //       conn.query(addQuery, checkValues, (err, result) => {
+  //         console.log(result);
+  //         if (err) {
+  //           console.error(err);
+  //           res.status(500).send("An error occurred while adding to favorites");
+  //           conn.release();
+  //           return;
+  //         }
+  //         res.status(200).json({
+  //           isSuccess: true,
+  //           message: "Movie added to favorites successfully",
+  //         });
+  //         conn.release();
+  //       });
+  //     }
+  //   });
+  // });
 });
 
 module.exports = router;
