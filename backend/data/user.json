@@ -1,0 +1,20 @@
+[
+  {
+    "username": "양지원",
+    "password": "zzzzzzzz",
+    "nickname": "ㅇㅇㅇㅇ",
+    "userID": "zzzz",
+    "likeOTTs": ["넷플릭스"],
+    "likeGenres": ["로맨스", "코미디"],
+    "birthdate": "20030720"
+  },
+  {
+    "username": "양지원",
+    "password": "zzzzzzzz",
+    "nickname": "ㅇㅇㅇㅇ",
+    "userID": "zzzz",
+    "likeOTTs": ["넷플릭스"],
+    "likeGenres": ["로맨스", "코미디"],
+    "birthdate": "20030720"
+  }
+]
