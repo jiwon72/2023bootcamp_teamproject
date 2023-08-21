@@ -244,7 +244,7 @@ export default {
           this.ect && '기타',
         ].filter(Boolean),
       };
-      
+      console.log(registrationData)
       fetch("http://localhost:3000/auth/register", {
         method: "POST",
         headers: {

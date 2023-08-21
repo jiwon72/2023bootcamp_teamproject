@@ -26,6 +26,7 @@ console.log("readUsers" + users);
 // Login route
 router.post("/", (req, res) => {
   const { userID, password } = req.body;
+  console.log(req.body);
 
   //파일을 통한 로그인 구현 DB사용시 주석처리
   const user = users.find(
