@@ -31,26 +31,37 @@ const getConnection = require("../data/DBpool.js");
 // Edit Review from DB
 router.post("/reviews/:reviewId", (req, res) => {
   if (!req.session.user) {
-    return res.status(401).json({ message: "Session expired. Please login." });
+    return res
+      .status(401)
+      .json({ message: "Session expired. Please login.", isEdit: false });
   }
   const { content, rating } = req.body;
   const reviewId = req.params.reviewId;
 
-  const query = "UPDATE reviews SET content = ?, rating = ? WHERE id = ?";
+  const query = "UPDATE Review SET content = ?, rating = ? WHERE ReviewID = ?";
   const values = [content, rating, reviewId];
 
-  getConnection((err, conn) => {
+  getConnection((conn, err) => {
     if (err) {
       console.log(err);
-      return res.status(500).send("An error occurred");
+      return res
+        .status(500)
+        .json({ message: "An error occurred", isEdit: false });
     }
-    conn.query(query, values, (err) => {
+    conn.query(query, values, (err, result) => {
       conn.release();
+      if (result.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ message: "Review not found.", isEdit: false });
+      }
       if (err) {
         console.log(err);
-        return res.status(500).send("An error occurred");
+        return res
+          .status(500)
+          .json({ message: "An error occurred", isEdit: false });
       }
-      res.json({ message: "Review updated successfully." });
+      res.json({ message: "Review updated successfully.", isEdit: true });
     });
   });
 });
@@ -81,12 +92,17 @@ router.delete("/reviews/:reviewId", (req, res) => {
     conn.query(query, [reviewId], (err, result) => {
       // Check if any rows were affected
       if (result.affectedRows === 0) {
-        return res.status(404).send("No review found with the given ID");
+        return res.status(404).json({
+          message: "No review found with the given ID",
+          isDelete: false,
+        });
       }
       conn.release();
       if (err) {
         console.log(err);
-        return res.status(500).send("An error occurred");
+        return res
+          .status(500)
+          .json({ message: "An error occurred", isDelete: false });
       }
       return res.json({
         message: "Review deleted successfully.",
@@ -121,7 +137,9 @@ router.get("/movies/:movieId/reviews", (req, res) => {
       conn.release();
       if (err) {
         console.log(err.message);
-        return res.status(500).send("An error occurred during query execution");
+        return res
+          .status(500)
+          .json({ message: "An error occurred during query execution" });
       }
       res.json({ reviews: results });
     });
@@ -174,15 +192,19 @@ router.post("/movies/:movieId/reviews", (req, res) => {
   const db = getConnection((conn, err) => {
     if (err) {
       console.error("Database connection error:", err);
-      return res.status(500).send("An error occurred");
+      return res
+        .status(500)
+        .json({ message: "An error occurred", isWrite: false });
     }
     conn.query(query, values, (err) => {
       conn.release();
       if (err) {
         console.log(err.message);
-        return res.status(500).send("An error occurred");
+        return res
+          .status(500)
+          .json({ message: "An error occurred", isWrite: false });
       }
-      res.json({ message: "Review added successfully." });
+      res.json({ message: "Review added successfully.", isWrite: true });
     });
   });
 });
