@@ -5,9 +5,11 @@ const router = express.Router();
 TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN;
 
 router.get("/popular", async (req, res) => {
+  const page = req.query.page || 1;
+
   const options = {
     method: "GET",
-    url: "https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1",
+    url: `https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=${page}`,
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
@@ -16,7 +18,7 @@ router.get("/popular", async (req, res) => {
 
   try {
     const response = await axios.request(options);
-    const movies = response.data.results.slice(0, 10);
+    const movies = response.data.results;
     res.json(movies);
   } catch (error) {
     console.error(error);
@@ -26,10 +28,11 @@ router.get("/popular", async (req, res) => {
 
 router.get("/popular/genre", async (req, res) => {
   const genreID = req.query.genreId; // Get the genre ID from the route parameter
+  const page = req.query.page || 1;
 
   const options = {
     method: "GET",
-    url: `https://api.themoviedb.org/3/movie/popular?with_genres=${genreID}&language=ko-KR&page=1`,
+    url: `https://api.themoviedb.org/3/movie/popular?with_genres=${genreID}&language=ko-KR&page=${page}`,
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
@@ -38,19 +41,24 @@ router.get("/popular/genre", async (req, res) => {
 
   try {
     const response = await axios.request(options);
-    const movies = response.data.results.slice(0, 10);
+    const movies = response.data.results;
+    console.log("moviesLength", movies.length);
     res.json(movies);
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     res.status(500).send("Error fetching movies for the given genre");
   }
 });
 
 router.get("/popular/ott", async (req, res) => {
-  const ottName = req.query.ottname;
+  const ottId = req.query.ottId;
+  if (ottId === null || ottId === undefined) {
+    res.status(404).json({ message: "ottId is null or undefined" });
+  }
+  const page = req.query.page || 1;
   const options = {
     method: "GET",
-    url: `https://api.themoviedb.org/3/movie/popular?with_watch_providers=${ottName}&language=ko-KR&page=1`,
+    url: `https://api.themoviedb.org/3/movie/popular?with_watch_providers=${ottId}&sort_by=popularity.desc&language=ko-KR&page=${page}&watch_region=KR`,
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
@@ -59,47 +67,12 @@ router.get("/popular/ott", async (req, res) => {
 
   try {
     const response = await axios.request(options);
-    const movies = response.data.results.slice(0, 10);
-    console.log(movies);
+    const movies = response.data.results; // Fetch OTT provider details for each movie and add to the result
+
     res.json(movies);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error fetching movies by OTT");
-  }
-});
-
-router.get("/test", async (req, res) => {
-  const ottName = req.query.ottname;
-  const options = {
-    method: "GET",
-    url: "https://api.themoviedb.org/3/watch/providers/movie?language=ko-KR&watch_region=KR",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-    },
-  };
-
-  try {
-    let ottList = [];
-    const response = await axios.request(options);
-    const responseData = response.data.results;
-    if (Array.isArray(responseData)) {
-      responseData.forEach((item) => {
-        if (item.display_priorities) {
-          delete item.display_priorities;
-        }
-      });
-    }
-    responseData.forEach((item) => {
-      if (item.provider_name) {
-        ottList.push(item.provider_name);
-      }
-    });
-    console.log(ottList);
-    res.json(responseData);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error fetching movies by OTT");
+    res.status(500).json({ message: "Error fetching movies by OTT" });
   }
 });
 
