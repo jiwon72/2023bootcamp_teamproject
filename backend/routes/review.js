@@ -97,6 +97,7 @@ router.delete("/reviews/:reviewId", (req, res) => {
           isDelete: false,
         });
       }
+
       conn.release();
       if (err) {
         console.log(err);
@@ -124,23 +125,46 @@ router.delete("/reviews/:reviewId", (req, res) => {
 // });
 
 //lookup reviews from DB
-router.get("/movies/:movieId/reviews", (req, res) => {
+router.get("/movies/:movieId/reviews", async (req, res) => {
   const movieId = req.params.movieId;
 
   const query = "SELECT * FROM Review WHERE Movie_Movie_ID = ?";
-  getConnection((conn, err) => {
+  getConnection(async (conn, err) => {
     if (err) {
       console.log(err);
-      return res.status(500).send("An error occurred ");
+      return res.status(500).json({ message: "An error occurred " });
     }
-    conn.query(query, [movieId], (err, results) => {
-      conn.release();
+    conn.query(query, [movieId], async (err, results) => {
       if (err) {
         console.log(err.message);
         return res
           .status(500)
           .json({ message: "An error occurred during query execution" });
       }
+
+      const getNickname = (userID) => {
+        return new Promise((resolve, reject) => {
+          const query = "SELECT NickName FROM user WHERE user_ID = ?";
+          conn.query(query, [userID], (err, rows) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(rows[0].NickName);
+            }
+          });
+        });
+      };
+
+      for (let i = 0; i < results.length; i++) {
+        try {
+          results[i].nickname = await getNickname(results[i].user_userID);
+        } catch (error) {
+          console.log(error);
+          conn.release();
+          return res.status(500).json({ message: "An error occurred" });
+        }
+      }
+      conn.release();
       res.json({ reviews: results });
     });
   });
