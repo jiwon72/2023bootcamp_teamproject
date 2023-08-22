@@ -27,11 +27,11 @@ const users = readUsers(); // Function to read users from the JSON file
 router.post("/", (req, res) => {
   const { userID, password } = req.body;
 
-  //파일을 통한 로그인 구현 DB사용시 주석처리
+  // //파일을 통한 로그인 구현 DB사용시 주석처리
   // const user = users.find(
   //   (user) => user.userID === userID && user.password === password
   // );
-  //   console.log(user)
+  // console.log(user);
   // if (!user) {
   //   return res.status(401).json({ isLoggedIn: false, message: "Login fail" });
   // }
