@@ -24,7 +24,7 @@ router.get("/popular", async (req, res) => {
   }
 });
 
-router.get("/popular?genreId=:genreId", async (req, res) => {
+router.get("/popular/genre", async (req, res) => {
   const genreID = req.query.genreId; // Get the genre ID from the route parameter
 
   const options = {
@@ -46,7 +46,7 @@ router.get("/popular?genreId=:genreId", async (req, res) => {
   }
 });
 
-router.get("popular?ottname=:ottname", async (req, res) => {
+router.get("/popular/ott", async (req, res) => {
   const ottName = req.query.ottname;
   const options = {
     method: "GET",
