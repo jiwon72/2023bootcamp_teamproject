@@ -69,6 +69,7 @@ export default {
       })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         if (data.isLoggedIn) { // 서버에서 받은 응답에 따라 수정
           this.message = "로그인 성공";
           this.error = "";

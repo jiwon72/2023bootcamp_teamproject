@@ -91,3 +91,21 @@ app.listen(port, () => {
 app.get("/protected-route", (req, res) => {
   res.send(req.session);
 });
+//DB user 조회용 api
+app.get("/devuser", (req, res) => {
+  getConnection((conn) => {
+    conn.query("SELECT * FROM user", (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({
+          messsage: "An error occurred",
+          error: err,
+        });
+        conn.release();
+        return;
+      }
+      res.status(200).json(result);
+      conn.release();
+    });
+  });
+});
