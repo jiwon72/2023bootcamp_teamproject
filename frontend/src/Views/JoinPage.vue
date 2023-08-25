@@ -1,7 +1,13 @@
 <template>
   <div>
     <header>
-    <h2 class="join-custom-h2">Movie Finder</h2>
+    <h2 class="join-custom-h2">
+      <img
+            src="/images/logo2.2.png"
+            class="logo"
+            alt="logo"
+          />
+      Movie Finder</h2>
     </header>
     <div class="join-container">
       <form @submit.prevent="submitForm">
@@ -17,7 +23,7 @@
         <div class="join-input-container">
           <div class="join-field">
             <label class="join-label" for="input_name">이름 :</label>
-            <input class="join-input" name="input_name" placeholder="이름을 입력해주세요" v-model="user_name">
+            <input class="join-input" name="input_name" placeholder="이름을 입력해주세요" v-model="username">
           </div>
         </div>
         <div class="join-input-container">
@@ -64,7 +70,7 @@
           <h3 class="join-select-title">OTT 서비스 선택</h3>
             <div class="join-select-options">
               <div class="join-select-item">
-                <input type="checkbox" v-model="Netflex">
+                <input type="checkbox" v-model="Netflix">
                 넷플릭스
               </div>
               <div class="join-select-item">
@@ -138,7 +144,7 @@
                 기타
               </div>
             </div>
-            <button @click="goToLoginPage" class="join-button_submit" type="submit">회원가입</button>
+          <button @click="goToLoginPage" class="join-button_submit" type="submit">회원가입</button>
       </form>
     </div>
   </div>
@@ -148,7 +154,7 @@
 export default {
   data() {
     return {
-      user_name: '',
+      username: '',
       user_birthday: '',
       user_nickname: '',
       user_id: '',
@@ -175,9 +181,6 @@ export default {
     };
   },
   methods: {
-    goToLoginPage() {
-      this.$router.push('/LoginPage');
-    },
     toggleAgreed() {
       if (!this.agreed) {
         alert('개인정보 수집에 동의한 후 이용 가능합니다.');
@@ -189,7 +192,7 @@ export default {
         return;
       }
       if (
-        this.user_name === '' ||
+        this.username === '' ||
         this.user_birthday === '' ||
         this.user_nickname === '' ||
         this.user_id === '' ||
@@ -199,30 +202,28 @@ export default {
         alert('필수 입력 사항을 입력해주세요.');
         return;
       }
-      if (!/^\d{4}\/\d{2}\/\d{2}$/.test(this.user_birthday)) {  // 변경
-      alert('생년월일 입력칸에는 "0000년/00월/00일" 순서로 숫자만 입력 가능합니다.');
-      return;
-      }
-      if (this.user_pw.length < 8 || !this.hasSpecialCharacter(this.user_pw)) {
-        alert('비밀번호는 특수문자 포함 8글자 이상이어야 합니다.');
+      if (!/^\d{4}(\/|-)?\d{2}(\/|-)?\d{2}$/.test(this.user_birthday)) {
+        alert('생년월일 입력칸에는 "0000년/00월/00일" 순서로 숫자만 입력 가능합니다.');
         return;
       }
+      // if (this.user_pw.length < 8 || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]+/.test(this.user_pw)) {
+      //   alert('비밀번호는 특수문자 포함 8글자 이상이어야 합니다.');
+      //   return;
+      // }
 
       if (this.confirm_pw !== this.user_pw) {
         alert('비밀번호가 일치하지 않습니다.');
         return;
       }
 
-      alert('회원가입이 완료되었습니다.');
-
       const registrationData = {
         userID: this.user_id,
         password: this.user_pw,
-        username: this.user_name,
+        username: this.username,
         birthdate: this.user_birthday,
         nickname: this.user_nickname,
         likeOTTs: [
-          this.Netflex && '넷플릭스',
+          this.Netflix && '넷플릭스',
           this.Disneyplus && '디즈니플러스',
           this.Tving && '티빙',
           this.Watcha && '왓차',
@@ -243,8 +244,7 @@ export default {
           this.ect && '기타',
         ].filter(Boolean),
       };
-      
-
+      console.log(registrationData)
       fetch("http://localhost:3000/auth/register", {
         method: "POST",
         headers: {
@@ -252,23 +252,25 @@ export default {
         },
         body: JSON.stringify(registrationData),
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.isRegistered) {
-            alert(data.message || "회원가입이 완료되었습니다.");
-            this.$router.push('/LoginPage'); // 회원가입 성공 시 로그인 페이지로 이동
-          } else {
-            alert(data.message || "회원가입에 실패하였습니다.");
-          }
-        })
-        .catch((error) => {
-          console.error("오류:", error);
-          alert("회원가입 중 오류가 발생했습니다.");
-        });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data", data);
+        if (data.isRegistered) {
+          alert(data.message );
+          this.$router.push('/LoginPage'); // 회원가입 성공 시 로그인 페이지로 이동
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("오류:", error);
+        alert("회원가입 중 오류가 발생했습니다.");
+      });
     },
   },
 };
 </script>
+
 
 <style scoped>
 .join-custom-h2 {
@@ -279,6 +281,11 @@ export default {
   font-weight: bold;
   font-size: 32px;
   color: rgb(65, 0, 80);
+}
+.logo {
+  width: 60px;
+  margin-left: 15px;
+  cursor: pointer;
 }
 .join-agree-message {
   font-size: 13px;

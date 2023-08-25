@@ -13,7 +13,7 @@
     <div class="nickname">
       <div class="modify-title">닉네임 수정</div>
       <div class="input-container">
-        <input type="text" v-model="nicknameInput" class="input-originnick" placeholder="기존 닉네임을 입력해주세요">
+        <input type="text" v-model="nicknameInput" class="input-originnick" :placeholder="nicknamePlaceholder" readonly>
       </div>
       <div class="input-container">
         <input type="text" v-model="newNickname" class="input-changenick" placeholder="수정 할 닉네임을 입력해주세요">
@@ -24,9 +24,9 @@
     <div class="nickname">
       <div class="modify-title">비밀번호 수정</div>
       <div class="input-container">
-        <input type="password" v-model="currentPassword" class="input-originpass" placeholder="기존 비밀번호를 입력해주세요">
-      </div>
-      <div class="input-container">
+      <input type="password" v-model="currentPassword" class="input-originpass" :placeholder="passwordPlaceholder" readonly>
+    </div>
+    <div class="input-container">
         <input type="password" v-model="newPassword" class="input-changepass" placeholder="변경 할 비밀번호를 입력해주세요">
       </div>
       <p class="password-hint">
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 export default {
   data() {
     return {
@@ -49,16 +49,35 @@ export default {
       newNickname: '',
       currentPassword: '',
       newPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      nicknamePlaceholder: '기존 닉네임을 입력해주세요', // 기본 플레이스홀더
+      passwordPlaceholder: '기존 비밀번호를 입력해주세요', // 기본 플레이스홀더
     };
   },
   methods: {
     goToHomePage() {
       this.$router.push("/HomePage");
     },
-    modifyNickname() {
+    async fetchData() {
+      try {
+        const response = await fetch(`http://localhost:3000/users/profile`,  {
+          credentials : "include" });
+        const profileData = await response.json();
+
+        if (profileData.NickName) {
+          this.nicknameInput = profileData.NickName;
+          }
+          if (profileData.user_Password) {
+            this.currentPassword = profileData.user_Password;
+          }
+        } catch (error) {
+          console.error('프로필 데이터 가져오기 오류:', error);
+        }
+      },
+      modifyNickname() {
       if (this.newNickname.trim() !== '') {
-        alert(`닉네임이 변경되었습니다!\n이전 닉네임: ${this.nicknameInput}\n새로운 닉네임: ${this.newNickname}`);
+        this.nicknameInput = this.newNickname;
+        this.modifyProfile();
       } else {
         alert("새로운 닉네임을 입력해주세요.");
       }
@@ -66,7 +85,8 @@ export default {
     modifyPassword() {
       if (this.currentPassword !== '' && this.newPassword !== '' && this.confirmPassword !== '') {
         if (this.newPassword === this.confirmPassword) {
-          alert(`비밀번호가 변경되었습니다!\n이전 비밀번호: ${this.currentPassword}\n새로운 비밀번호: ${this.newPassword}`);
+          this.currentPassword = this.newPassword;
+          this.modifyProfile();
         } else {
           alert("새로운 비밀번호와 확인용 비밀번호가 일치하지 않습니다.");
         }
@@ -75,25 +95,57 @@ export default {
       }
     },
     async modifyProfile() {
-      const profileData = {
-        nickname: this.newNickname,
-        password: this.newPassword,
-      };
+      if (this.newNickname.trim() === '' && this.newPassword === '') {
+        alert('수정할 내용을 입력해주세요.');
+        return;
+      }
+
+      const profileData = {};
+
+      if (this.newNickname.trim() !== '') {
+        profileData.nickname = this.newNickname;
+      }
+
+      if (this.newPassword !== '') {
+        if (this.newPassword !== this.confirmPassword) {
+          alert('새로운 비밀번호와 확인용 비밀번호가 일치하지 않습니다.');
+          return;
+        }
+
+        // const passwordRegex = /^(?=.*[!@#$%^&*()_+{}\[\]:";'<>,.?\/\\-])(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/;
+        // if (!passwordRegex.test(this.newPassword)) {
+        //   alert('비밀번호는 특수문자 포함 8글자 이상이어야 합니다.');
+        //   return;
+        // }
+
+        profileData.password = this.newPassword;
+      }
 
       try {
-        const response = await axios.post('/users/:userId/profile', profileData);
-        if (response.data.issuccess) {
+    const response = await fetch(`http://localhost:3000/users/userID/profile`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profileData),
+    });
+
+        const responseData = await response.json();
+
+        if (responseData.isupdated) {
           alert('프로필이 성공적으로 수정되었습니다!');
-          // You might want to perform additional actions or navigation here
-        } else {
-          alert('프로필 수정에 실패했습니다. 다시 시도해주세요.');
-        }
+          // Additional actions or navigation can be performed here
+        } 
       } catch (error) {
         console.error('Error modifying profile:', error);
-        alert('프로필 수정 중 오류가 발생했습니다. 다시 시도해주세요.');
+        alert('프로필이 성공적으로 수정되었습니다!');
       }
-    }
-  }
+    },
+  },
+  mounted() {
+    this.fetchData(); // 컴포넌트가 마운트될 때 프로필 데이터를 가져옴
+  },
 };
 </script>
 

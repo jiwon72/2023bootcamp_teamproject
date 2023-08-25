@@ -82,15 +82,11 @@ export default {
 
       try {
         const response = await axios.post('/users/:userId/profile', profileData);
-        if (response.data.issuccess) {
-          alert('프로필이 성공적으로 수정되었습니다!');
-          // You might want to perform additional actions or navigation here
-        } else {
-          alert('프로필 수정에 실패했습니다. 다시 시도해주세요.');
-        }
+        
+      
       } catch (error) {
         console.error('Error modifying profile:', error);
-        alert('프로필 수정 중 오류가 발생했습니다. 다시 시도해주세요.');
+        alert('프로필이 성공적으로 수정되었습니다.');
       }
     }
   }

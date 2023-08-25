@@ -36,11 +36,7 @@
 export default {
   data() {
     return {
-      qnaList: [
-        // QnA data as objects in this array
-        { id: 1, questioner: '홍길동', question: 'Vue 사용법?', category: '프로그래밍', answer: '공식 문서를 참조하세요!', views: 42 },
-        // More items...
-      ]
+      qnaList: []
     };
   },
   methods: {
@@ -50,8 +46,21 @@ export default {
     goToQuestionPage() {
       this.$router.push('/QuestionPage');
     },
+    fetchQnAData() {
+      fetch("http://localhost:3000/questions") 
+        .then(response => response.json())
+        .then(data => {
+          this.qnaList = data;
+        })
+        .catch(error => {
+          console.error('Error fetching QnA data:', error);
+        });
+    }
+  },
+  mounted() {
+    this.fetchQnAData(); // 컴포넌트가 마운트될 때 QnA 데이터를 가져옵니다.
   }
-}
+};
 </script>
 
 <style scoped>

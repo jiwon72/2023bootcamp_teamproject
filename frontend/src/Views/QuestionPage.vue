@@ -10,22 +10,22 @@
     <div class="q-input-row">
       <input
         class="q-input-field"
-        placeholder="아이디를 입력하세요"
+        placeholder="제목을 입력하세요"
         type="text"
-        v-model="nickname"
+        v-model="title"
       />
-      <select class="q-rating-field q-input-field" v-model="rating">
+      <select class="q-rating-field q-input-field" v-model="category">
         <option value="" disabled selected>카테고리를 선택해주세요</option>
-        <option value="1">장르 추가</option>
-        <option value="2">원하는 영화</option>
-        <option value="3">영화 정보 오류</option>
-        <option value="4">건의함</option>
+        <option value="장르 추가">장르 추가</option>
+        <option value="원하는 영화">원하는 영화</option>
+        <option value="영화 정보 오류">영화 정보 오류</option>
+        <option value="건의함">건의함</option>
       </select>
     </div>
     <textarea
       class="q-textarea-field"
       placeholder="내용을 입력해주세요"
-      v-model="review"
+      v-model="content"
     ></textarea>
     <br />
     <footer>
@@ -38,21 +38,44 @@
 export default {
   data() {
     return {
-      nickname: "",
-      rating: "",
-      review: "",
+      category: "",
+      content: "",
+      questions: "",
     };
   },
   methods: {
-    submitReview() {
-      alert(
-        "Nickname: " +
-          this.nickname +
-          "\\nRating: " +
-          this.rating +
-          "\\nReview: " +
-          this.review
-      );
+    async submitReview() {
+      // Prepare the data to be sent in the request body
+      const requestData = {
+        title: this.nickname,
+        content: this.review,
+      };
+
+      try {
+        const response = await fetch("http://localhost:3000/questions", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Question submitted:', data);
+          alert('질문이 성공적으로 작성되었습니다.');
+          
+          // Reset the form fields
+          this.nickname = "";
+          this.review = "";
+        } else {
+          console.error('Error submitting question');
+          alert('질문 작성에 실패하였습니다.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('오류가 발생하였습니다.');
+      }
     },
   },
 };
@@ -79,7 +102,7 @@ export default {
 }
 .q-input-field {
   padding: 10px;
-  width: 48%; /* 변경된 너비 */
+  width: 58%; /* 변경된 너비 */
   border: 1px solid #ccc;
   border-radius: 5px;
   resize: none;
@@ -116,7 +139,8 @@ export default {
   margin-bottom: 10px;
 }
 .q-rating-field {
-  width: 48%; /* 변경된 너비 */
+  width: 39%; /* 변경된 너비 */
+  height: 44px;;
   margin-left: auto; /* 왼쪽 여백 자동 */
   position: relative;
 }
