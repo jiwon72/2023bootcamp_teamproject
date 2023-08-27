@@ -6,17 +6,6 @@ const getConnection = require("../data/DBpool.js");
 
 const storagePath = path.join(__dirname, "../data");
 const userFilePath = path.join(storagePath, "user.json");
-// Function to read users from the JSON file
-const readUsers = () => {
-  try {
-    const usersJson = fs.readFileSync(userFilePath, "utf8");
-    console.log("before" + JSON.parse(usersJson));
-    return JSON.parse(usersJson);
-  } catch (error) {
-    console.error("Error reading users from file:", error.message);
-    return [];
-  }
-};
 
 // 아이디 중복 확인용 api
 router.post("/check", (req, res) => {
@@ -104,10 +93,14 @@ router.post("/", (req, res) => {
     conn.query(query, values, (err, result) => {
       if (err) {
         console.log(err);
-        res.status(500).send("An error occurred");
+        res.status(500).json({
+          messsage: "An error occurred",
+          error: err,
+          isRegistered: false,
+        });
         return;
       }
-      res.status(200).send("User registered");
+      res.status(200).json({ message: "User registered", isRegistered: true });
     })
   );
 });
