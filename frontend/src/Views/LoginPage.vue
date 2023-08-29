@@ -1,28 +1,44 @@
 <template>
   <div class="login-container">
     <h2 class="login-custom-h2">
-      <img
-            src="/images/logo2.2.png"
-            class="logo"
-            alt="logo"
-          />
-      Movie Finder</h2>
+      <img src="/images/logo2.png" class="logo" alt="logo" />
+      Movie Finder
+    </h2>
     <div id="loginForm">
       <form @submit.prevent="login">
         <div class="login-input-container">
           <div class="login-id_field">
             <label class="login-id_label" for="input_id">ID :</label>
-            <input class="login-id_input" name="input_id" placeholder="아이디를 입력해주세요" v-model="formData.userID">
+            <input
+              class="login-id_input"
+              name="input_id"
+              placeholder="아이디를 입력해주세요"
+              v-model="formData.userID"
+            />
           </div>
         </div>
         <div class="login-input-container">
           <div class="login-id_field">
-            <label class="login-id_label" for="input_password">Password :</label>
-            <input class="login-id_input" name="input_password" placeholder="비밀번호를 입력해주세요" v-model="formData.password" type="password">
+            <label class="login-id_label" for="input_password"
+              >Password :</label
+            >
+            <input
+              class="login-id_input"
+              name="input_password"
+              placeholder="비밀번호를 입력해주세요"
+              v-model="formData.password"
+              type="password"
+            />
           </div>
         </div>
         <div>
-          <button @click="goToHomePage" type="submit" class="login-button_loginsubmit">로그인</button>
+          <button
+            @click="goToHomePage"
+            type="submit"
+            class="login-button_loginsubmit"
+          >
+            로그인
+          </button>
         </div>
         <div>
           <span @click="goToJoinPage" class="login-button_join">회원가입</span>
@@ -46,17 +62,17 @@ export default {
   },
   methods: {
     goToJoinPage() {
-      this.$router.push('/JoinPage');
+      this.$router.push("/JoinPage");
     },
 
     login() {
-      console.log("formData",this.formData)
-      if (this.formData.userID === '') {
-        alert('ID를 입력하세요.');
+      console.log("formData", this.formData);
+      if (this.formData.userID === "") {
+        alert("ID를 입력하세요.");
         return;
       }
-      if (this.formData.password === '') {
-        alert('비밀번호를 입력하세요.');
+      if (this.formData.password === "") {
+        alert("비밀번호를 입력하세요.");
         return;
       }
       fetch("http://localhost:3000/auth/login", {
@@ -67,25 +83,27 @@ export default {
         body: JSON.stringify(this.formData),
         credentials: "include",
       })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.isLoggedIn) { // 서버에서 받은 응답에 따라 수정
-          this.message = "로그인 성공";
-          this.error = "";
-          this.$router.push('/HomePage'); // 로그인 성공 시에만 페이지 전환
-        } else {
-          this.error = data.message || "유효하지 않은 사용자 이름 또는 비밀번호";
-          this.message = "";
-          alert(this.error); // 오류 메시지를 경고창으로 표시
-        }
-      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.isLoggedIn) {
+            // 서버에서 받은 응답에 따라 수정
+            this.message = "로그인 성공";
+            this.error = "";
+            this.$router.push("/HomePage"); // 로그인 성공 시에만 페이지 전환
+          } else {
+            this.error =
+              data.message || "유효하지 않은 사용자 이름 또는 비밀번호";
+            this.message = "";
+            alert(this.error); // 오류 메시지를 경고창으로 표시
+          }
+        })
         .catch((error) => {
           console.error("오류:", error);
           this.error = "로그인 중 오류 발생";
           this.message = "";
           alert(this.error); // 오류 메시지를 경고창으로 표시
         });
-      },
+    },
     // 로그아웃 메서드
     logout() {
       // 로그아웃 API 엔드포인트에 POST 요청을 보냄
@@ -121,7 +139,9 @@ export default {
 </script>
 
 <style scoped>
-html, body, .login-container {
+html,
+body,
+.login-container {
   margin: 0;
   padding: 0;
   overflow: hidden; /* 스크롤 비활성화 */
@@ -136,14 +156,14 @@ html, body, .login-container {
 
 .login-custom-h2 {
   text-align: center;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-weight: bold;
   font-size: 32px;
   color: rgb(65, 0, 80);
-  margin-bottom: 20px; 
-  margin-top:70px;
+  margin-bottom: 20px;
+  margin-top: 70px;
 }
-.logo{
+.logo {
   width: 60px;
 }
 .login-input-container {
@@ -156,11 +176,11 @@ html, body, .login-container {
 .login-id_field {
   display: flex;
   align-items: center;
-  width: 400px; 
+  width: 400px;
 }
 
 .login-id_label {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-weight: bold;
   font-size: 15px;
   color: rgb(65, 0, 80);
@@ -205,7 +225,7 @@ html, body, .login-container {
 
 .login-button_join:hover {
   background-color: rgb(95, 30, 110);
-  color:white;
+  color: white;
 }
 
 @import "~bootstrap/dist/css/bootstrap.min.css";
