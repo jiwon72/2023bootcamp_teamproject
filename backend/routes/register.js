@@ -31,6 +31,30 @@ router.post("/check", (req, res) => {
     })
   );
 });
+// nickname 중복 확인용 api
+router.post("/checknick", (req, res) => {
+  const { nickname } = req.body;
+  const query = "SELECT * FROM user WHERE NickName = ?";
+  const values = [nickname];
+  const db = getConnection((conn) =>
+    conn.query(query, values, (err, result) => {
+      conn.release();
+
+      if (err) {
+        console.log(err);
+        res.status(500).send("An error occurred");
+        return;
+      }
+      if (result.length === 0) {
+        res.status(200).json({ message: "User not found", isDuplicate: false });
+      } else {
+        res
+          .status(409)
+          .json({ message: "Same nickname exists", isDuplicate: true });
+      }
+    })
+  );
+});
 
 // Registration route
 router.post("/", (req, res) => {
