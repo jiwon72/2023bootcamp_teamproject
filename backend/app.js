@@ -4,6 +4,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const getConnection = require("./data/DBpool");
 
 // Create the Express app
 const app = express();
@@ -91,6 +92,7 @@ app.listen(port, () => {
 app.get("/protected-route", (req, res) => {
   res.send(req.session);
 });
+
 //DB user 조회용 api
 app.get("/devuser", (req, res) => {
   getConnection((conn) => {

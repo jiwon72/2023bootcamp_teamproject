@@ -17,7 +17,6 @@ router.get("/movie", async function (req, res) {
   getOttList();
   const query = req.query.query;
   const page = req.query.page || 1;
-  console.log(TMDB_ACCESS_TOKEN);
 
   if (!query) {
     return res.status(400).json({ error: "Query parameter is required." });
@@ -26,7 +25,7 @@ router.get("/movie", async function (req, res) {
   try {
     const searchOptions = {
       method: "GET",
-      url: `https://api.themoviedb.org/3/search/movie?query=${encodeURI(
+      url: `https://api.themoviedb.org/3/search/multi?query=${encodeURI(
         query
       )}&include_adult=false&language=${LANGUAGE}&page=${page}`,
       headers: {
@@ -36,9 +35,22 @@ router.get("/movie", async function (req, res) {
     };
 
     const searchResponse = await axios.request(searchOptions);
-    const movieIds = searchResponse.data.results.map((movie) => movie.id);
-
-    const detailsPromises = movieIds.map((id) => {
+    console.log("searchResponse", searchResponse.data.results);
+    const movieIds = searchResponse.data.results.map((movie) => {
+      if (movie.media_type === "movie") {
+        return movie.id;
+      } else return null;
+    });
+    const filteredMovieIds = movieIds.filter((id) => id !== null);
+    const personData = searchResponse.data.results.filter((data) => {
+      if (data.media_type === "person") {
+        return data;
+      } else return null;
+    });
+    const filteredPersonData = personData.filter((data) => data !== null);
+    console.log("filteredPersonData", filteredPersonData);
+    const detailsPromises = filteredMovieIds.map((id) => {
+      if (!id) return null;
       const detailOptions = {
         method: "GET",
         url: `https://api.themoviedb.org/3/movie/${id}?language=${LANGUAGE}`,
@@ -58,7 +70,7 @@ router.get("/movie", async function (req, res) {
         // console.log("detail", detail.data);
         kortitle = detail.data.title;
         engtitle = detail.data.original_title;
-        const ottList = await getOttList(engtitle, kortitle);
+        const ottList = (await getOttList(engtitle, kortitle)) || [];
         console.log("ottList", ottList);
         return {
           ...detail.data,
@@ -67,10 +79,15 @@ router.get("/movie", async function (req, res) {
       })
     );
 
-    res.status(200).json(combinedResults);
+    res
+      .status(200)
+      .json({
+        movieResults: combinedResults,
+        personResults: filteredPersonData,
+      });
   } catch (error) {
     res.status(error.response ? error.response.status : 500).end();
-    console.log("error =", error.response ? error.response.status : error);
+    console.log("error =", error.response);
   }
 });
 
