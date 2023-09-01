@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
+const getConnection=require("../data/DBpool")
 
 const storagePath = path.join(__dirname, "../data");
 const userFilePath = path.join(storagePath, "favorite.json");
@@ -23,26 +24,31 @@ router.get("/", (req, res) => {
   if (!userSession) {
     return res.status(401).json({ message: "Session expired. Please login." });
   }
+  const userId=userSession.userID
+  
+  // DB 연결
+  getConnection((conn) => {
+    // 해당 영화가 이미 즐겨찾기에 추가되어 있는지 확인하는 쿼리
+    const Findquery = "SELECT * FROM MoviesMark WHERE user_user_id = ?";
+    const userID = [userId];
 
-  // Read existing favorites from the JSON file
-  let favorites = readFavorites();
+    conn.query(Findquery, userID, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("An error occurred");
+        conn.release();
+        return;
+      }
 
-  let userIndex = null;
-  for (let i = 0; i < favorites.length; i++) {
-    if (favorites[i].userId === userSession.userID) {
-      userIndex = i;
-    }
-  }
+    
+    else {
 
-  // If user doesn't exist in the favorites, return error
-  if (userIndex === null) {
-    return res.status(404).json({ message: "User not found in favorites." });
-  }
+      res.json({favorites : result})
 
-  // Respond with the favorite list
-  return res.json({
-    favorites: favorites[userIndex].favoriteList,
-    message: "Successfully retrieved favorites.",
+
+    
+      }
+    });
   });
 });
 module.exports = router;

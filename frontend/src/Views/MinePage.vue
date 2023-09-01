@@ -16,16 +16,14 @@
       </div>
     </header>
     <div class="mine-dropdown">
-    <div class="mine-dropdown-button" @click="toggleDropdown">
-      정렬순 ▼
+      <div class="mine-dropdown-button" @click="toggleDropdown">정렬순 ▼</div>
+      <div class="mine-dropdown-menu" v-show="showDropdown">
+        <div class="mine-dropdown-item">최근 찜한순</div>
+        <div class="mine-dropdown-item">ㄱㄴㄷ순</div>
+        <div class="mine-dropdown-item">개봉년도순</div>
+      </div>
     </div>
-    <div class="mine-dropdown-menu" v-show="showDropdown">
-      <div class="mine-dropdown-item">최근 찜한순</div>
-      <div class="mine-dropdown-item">ㄱㄴㄷ순</div>
-      <div class="mine-dropdown-item">개봉년도순</div>
-    </div>
-  </div>
-  <div class="mine-movies">
+    <div class="mine-movies">
       <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
         <div class="mine-card" style="width: 18rem">
           <img
@@ -35,7 +33,12 @@
           />
           <div class="mine-card-body">
             <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button @click="removeFromFavorites(movie.id)" class="mine-remove-button">보관함 삭제</button>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
           </div>
         </div>
       </div>
@@ -48,7 +51,12 @@
           />
           <div class="mine-card-body">
             <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button @click="removeFromFavorites(movie.id)" class="mine-remove-button">보관함 삭제</button>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
           </div>
         </div>
       </div>
@@ -61,7 +69,12 @@
           />
           <div class="mine-card-body">
             <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button @click="removeFromFavorites(movie.id)" class="mine-remove-button">보관함 삭제</button>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
           </div>
         </div>
       </div>
@@ -74,7 +87,12 @@
           />
           <div class="mine-card-body">
             <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button @click="removeFromFavorites(movie.id)" class="mine-remove-button">보관함 삭제</button>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
           </div>
         </div>
       </div>
@@ -87,7 +105,12 @@
           />
           <div class="mine-card-body">
             <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button @click="removeFromFavorites(movie.id)" class="mine-remove-button">보관함 삭제</button>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
           </div>
         </div>
       </div>
@@ -100,7 +123,12 @@
           />
           <div class="mine-card-body">
             <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button @click="removeFromFavorites(movie.id)" class="mine-remove-button">보관함 삭제</button>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
           </div>
         </div>
       </div>
@@ -111,9 +139,7 @@
 <script>
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faStar, faHome
-} from "@fortawesome/free-solid-svg-icons";
+import { faStar, faHome } from "@fortawesome/free-solid-svg-icons";
 
 export default {
   name: "MovieHeader",
@@ -132,14 +158,16 @@ export default {
   },
   methods: {
     goToHomePage() {
-      this.$router.push('/HomePage');
+      this.$router.push("/HomePage");
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
     loadFavoriteMovies() {
       // 보관함 목록을 가져오는 API 요청 함수 호출
-      fetch("http://localhost:3000/users/favorites")
+      fetch("http://localhost:3000/users/favorites", {
+        credentials: "include",
+      })
         .then((response) => response.json())
         .then((data) => {
           this.favoriteMovies = data.favorites || [];
@@ -198,29 +226,29 @@ export default {
     },
   },
 };
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
+  resizePosters();
+
+  window.addEventListener("resize", function () {
     resizePosters();
-
-    window.addEventListener("resize", function() {
-      resizePosters();
-    });
   });
-  function resizePosters() {
-    var posters = document.querySelectorAll(".movies .poster");
-    var posterWidth = (window.innerWidth * 0.2) - 20; 
+});
+function resizePosters() {
+  var posters = document.querySelectorAll(".movies .poster");
+  var posterWidth = window.innerWidth * 0.2 - 20;
 
-    posters.forEach(function(poster) {
-      poster.style.width = posterWidth + "px";
-    });
-  }
+  posters.forEach(function (poster) {
+    poster.style.width = posterWidth + "px";
+  });
+}
 </script>
 
 <style scoped>
 .mine-custom-h2 {
-  margin-left: 10px; 
+  margin-left: 10px;
   margin-bottom: 5px;
-  margin-top:20px;
-  font-family: 'Arial', sans-serif;
+  margin-top: 20px;
+  font-family: "Arial", sans-serif;
   font-weight: bold;
   font-size: 32px;
   color: rgb(65, 0, 80);
@@ -243,15 +271,15 @@ window.addEventListener("load", function() {
   align-items: center;
 }
 
-.mine-user-star{
-  font-size:30px;
-  margin-left:10px;
+.mine-user-star {
+  font-size: 30px;
+  margin-left: 10px;
   margin-right: 10px;
-  margin-top:13px;
+  margin-top: 13px;
   color: rgb(65, 0, 80);
 }
-.mine-user-mine{
-  margin-right:20px;
+.mine-user-mine {
+  margin-right: 20px;
   font-size: 30px;
   color: rgb(65, 0, 80);
 }
@@ -269,13 +297,13 @@ window.addEventListener("load", function() {
   background-color: none;
   border-radius: 4px;
   border: 2px solid rgb(65, 0, 80);
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
   margin-left: 60px;
 }
 .mine-dropdown-menu {
   position: absolute;
   top: 100%;
-  margin-left:20px;
+  margin-left: 20px;
   background-color: #fff;
   border: 1px solid #ccc;
   font-size: 11px;
@@ -321,13 +349,13 @@ window.addEventListener("load", function() {
   max-width: calc(20% - 20px);
 }
 .mine-movieposter {
-  width: 50%; 
+  width: 50%;
   height: auto;
   margin-left: 10px;
 }
 .mine-card-title {
-  margin-left:55px; 
-  margin-top:3px;
+  margin-left: 55px;
+  margin-top: 3px;
   margin-bottom: 10px;
 }
 @import "~bootstrap/dist/css/bootstrap.min.css";
