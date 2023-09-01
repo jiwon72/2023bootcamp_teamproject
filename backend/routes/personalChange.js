@@ -37,7 +37,7 @@ const enableForeignKeyChecks = (conn, callback) => {
   });
 };
 
-router.post("/profile", (req, res) => {
+router.post("/userID/profile", (req, res) => {
   const userSession = req.session.user;
   const nickname = req.body.nickname;
   const password = req.body.password;

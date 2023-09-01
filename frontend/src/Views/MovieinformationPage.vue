@@ -35,22 +35,27 @@
       <div @click="goToSelectRomance" class="info-genre-item">로맨스</div>
       <div @click="goToSelectComedy" class="info-genre-item">코미디</div>
       <div @click="goToSelectHorror" class="info-genre-item">공포</div>
+      <div @click="goToSelectThriller" class="info-genre-item">스릴러</div>
       <div @click="goToSelectAnimation" class="info-genre-item">애니메이션</div>
       <div @click="goToSelectDrama" class="info-genre-item">드라마</div>
       <div @click="goToSelectFantasy" class="info-genre-item">판타지</div>
       <div @click="goToSelectSF" class="info-genre-item">SF</div>
       <div @click="goToSelectMystery" class="info-genre-item">추리</div>
       <div @click="goToSelectCrime" class="info-genre-item">범죄</div>
-      <div @click="goToSelectGrow" class="info-genre-item">성장</div>
+      <div @click="goToSelectMusic" class="info-genre-item">음악</div>
       <div @click="goToSelectAction" class="info-genre-item">액션</div>
-      <div @click="goToSelectEtc" class="info-genre-item">기타</div>
+      <div @click="goToSelectHistory" class="info-genre-item">역사</div>
+      <div @click="goToSelectFamily" class="info-genre-item">가족</div>
+      <div @click="goToSelectWar" class="info-genre-item">전쟁</div>
+      <div @click="goToSelectWestern" class="info-genre-item">서부</div>
+      <div @click="goToSelectAdventure" class="info-genre-item">모험</div>
     </div>
     <div class="info-select-platform" @mouseenter="togglePlatformMenu">플랫폼 선택</div>
     <div class="info-platform-menu" v-show="showPlatform" @mouseleave="hideMenus">
       <div @click="goToSelectNetflix" class="info-platform-item">넷플릭스</div>
       <div @click="goToSelectDisneyplus" class="info-platform-item">디즈니플러스</div>
       <div @click="goToSelectWavve" class="info-platform-item">웨이브</div>
-      <div @click="goToSelectTving" class="info-platform-item">티빙</div>
+      <div @click="goToSelectAppleTV" class="info-platform-item">AppleTV</div>
       <div @click="goToSelectWatcha" class="info-platform-item">왓차</div>
     </div>
   </div>
@@ -67,7 +72,7 @@
   </div>
   <div class="info-movie-details">
     <div class="info-movie-detail-line">
-      <ul><h3>곡성</h3></ul>
+      <ul><h3 class="info-movie-title">곡성</h3></ul>
     </div>
     <table class="info-movie-details">
       <tr class="info-movie-detail-line">
@@ -98,6 +103,7 @@
         <div class="info-movie-reviews">
           <br>
           <h4>리뷰 및 평점</h4>
+          <button @click="goToGoReviewPage" class="goreview"> 더 많은 리뷰 보기</button>
           <ul>
             <li>
               <span>Juni0****</span>
@@ -162,6 +168,9 @@ export default {
     goToReviewPage() {
       this.$router.push("/ReviewPage");
     },
+    goToGoReviewPage() {
+      this.$router.push("/GoReviewPage");
+    },
     goToSelectRomance() {
       this.$router.push('/SelectRomance');
     },
@@ -171,11 +180,14 @@ export default {
     goToSelectHorror() {
       this.$router.push('/SelectHorror');
     },
+    goToSelectThriller() {
+      this.$router.push('/SelectThriller');
+    },
     goToSelectAnimation() {
       this.$router.push('/SelectAnimation');
     },
     goToSelectDrama() {
-      this.$router.push('/SelectPDrama');
+      this.$router.push('/SelectDrama');
     },
     goToSelectFantasy() {
       this.$router.push('/SelectFantasy');
@@ -189,14 +201,26 @@ export default {
     goToSelectCrime() {
       this.$router.push('/SelectCrime');
     },
-    goToSelectGrow() {
-      this.$router.push('/SelectGrow');
+    goToSelectMusic() {
+      this.$router.push('/SelectMusic');
     },
     goToSelectAction() {
       this.$router.push('/SelectAction');
     },
-    goToSelectEtc() {
-      this.$router.push('/SelectEtc');
+    goToSelectHistory() {
+      this.$router.push('/SelectHistory');
+    },
+    goToSelectFamily() {
+      this.$router.push('/SelectFamily');
+    },
+    goToSelectWar() {
+      this.$router.push('/SelectWar');
+    },
+    goToSelectWestern() {
+      this.$router.push('/SelectWestern');
+    },
+    goToSelectAdventure() {
+      this.$router.push('/SelectAdventure');
     },
     goToSelectNetflix() {
       this.$router.push('/SelectNetflix');
@@ -207,8 +231,8 @@ export default {
     goToSelectWavve() {
       this.$router.push('/SelectWavve');
     },
-    goToSelectTving() {
-      this.$router.push('/SelectTving');
+    goToSelectAppleTV() {
+      this.$router.push('/SelectAppleTV');
     },
     goToSelectWatcha() {
       this.$router.push('/SelectWatcha');
@@ -352,8 +376,8 @@ export default {
   padding: 15px;
   background-color: white; 
   width: calc(100vw / 6); 
+  min-height: 85vh; 
   overflow-y: auto;
-  height: 100vh; 
   position: relative; 
   border-right: 2px solid rgb(65, 0, 80);
   flex: 1;
@@ -486,7 +510,10 @@ export default {
   margin: 0;
   padding: 5px;
 }
-
+.info-movie-title{
+  right:30px;
+  position: relative;
+}
 .info-movie-details td {
   border: 1px solid #ddd;
   text-align: left;
@@ -502,6 +529,11 @@ export default {
 .info-movie-details h4 {
   font-size: 18px; /* 원하는 크기로 조정 */
 }
+.goreview{
+  font-size: 10px;
+  align-content: right ;
+}
+
 
 .info-movie-details span {
   font-size: 14px; /* 원하는 크기로 조정 */

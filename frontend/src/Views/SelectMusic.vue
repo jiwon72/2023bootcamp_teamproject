@@ -3,7 +3,7 @@
     <header>
       <div class="sel-title-with-icon">
         <div class="sel-title">
-          <h2 class="sel-custom-h2">Tving</h2>
+          <h2 class="sel-custom-h2">음악</h2>
         </div>
         <div class="sel-right-icons">
           <font-awesome-icon
