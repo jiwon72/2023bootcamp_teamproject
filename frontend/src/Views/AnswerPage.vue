@@ -9,14 +9,13 @@
       Question&Answer
     </div>
     <div class="ans-input-row">
-      <input type="text" v-model="titleInput" class="ans-input-field">
-      <select v-model="rating" class="ans-rating-field ans-input-field">
-        <option value="">평점을 입력하세요</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
+      <input type="text" v-model="title" class="ans-input-field">
+      <select class="q-rating-field q-input-field" v-model="category" default>
+        <option value="" disabled selected>카테고리를 선택해주세요</option>
+        <option value="장르 추가">장르 추가</option>
+        <option value="원하는 영화">원하는 영화</option>
+        <option value="영화 정보 오류">영화 정보 오류</option>
+        <option value="건의함">건의함</option>
       </select>
     </div>
     <div class="ans-textarea-footer">
@@ -40,31 +39,45 @@
 export default {
   data() {
     return {
-      titleInput: '',
+      title: '',
       content: '',
-      questionId: ''
+      questionId: '',
+      category : ''
     };
   },
   created() {
-    const questionId = this.$route.params.questionId;
-    this.questionId = questionId;
-    this.fetchQuestionDetails(questionId);
-  },
+  const questionId = this.$route.query.questionId;
+  this.questionId = questionId; // questionId를 컴포넌트의 데이터에 할당
+  this.fetchQuestionDetails(questionId); // 그 후에 fetchQuestionDetails 메서드 호출
+},
   methods: {
     async fetchQuestionDetails(questionId) {
-      try {
-        const response = await fetch(`http://localhost:3000/questions/${questionId}`);
-        if (response.ok) {
-          const questionData = await response.json();
-          this.titleInput = questionData.title;
-          this.content = questionData.content;
-        } else {
-          console.error('Failed to fetch question details');
-        }
-      } catch (error) {
-        console.error('Error fetching question details:', error);
+  try {
+    this.isLoadingQuestionDetails = true; // 이 행은 필요한 경우 로딩 상태를 표시할 수 있는 데이터 상태를 가정합니다.
+
+    const response = await fetch(`http://localhost:3000/questions/${questionId}`, {
+      credentials: "include",
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
       }
-    },
+    });
+
+    if (response.ok) {
+      const questionData = await response.json();
+      this.title = questionData.question.title;
+      this.content = questionData.question.content;
+      this.category= questionData.question.Category;
+    } else {
+      console.error('Failed to fetch question details');
+    }
+  } catch (error) {
+    console.error('Error fetching question details:', error);
+  } finally {
+    this.isLoadingQuestionDetails = false; // 데이터 로딩이 완료될 때 로딩 상태를 업데이트합니다.
+  }
+}
+,
     async editQuestion() {
       const questionId = this.questionId;
       const editData = {

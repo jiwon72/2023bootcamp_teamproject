@@ -26,8 +26,8 @@ router.get("/questions", (req, res) => {
 
 
 // 특정 질문 조회
-router.get("/questions/:Question_ID", (req, res) => {
-  const questionId = req.params.Question_ID;
+router.get("/questions/:questionId", (req, res) => {
+  const questionId = req.params.questionId;
 
   getConnection(function (conn) {
     const selectQuery = "SELECT * FROM Question WHERE Question_ID = ?";
@@ -98,18 +98,18 @@ router.post("/questions", (req, res) => {
   }
 
   const userId = userSession.userID; // 세션에서 userID 가져오기
-  const { title, content, NickName, Answer } = req.body; // user_user_ID는 세션에서 가져옴
+  const { title, content, category, Answer } = req.body; // user_user_ID는 세션에서 가져옴
 
   getConnection(function (conn) {
     const insertQuery = `
       INSERT INTO Question
-      (content, CreateDate, title, user_user_ID, NickName, Answer)
+      (content, CreateDate, title, user_user_ID, Category, Answer)
       VALUES (?, NOW(), ?, ?, ?, ?)
     `;
 
     conn.query(
       insertQuery,
-      [content, title, userId, NickName, Answer], // userID는 세션에서 가져온 값으로
+      [content, title, userId, category, Answer], // userID는 세션에서 가져온 값으로
       function (error, results) {
         conn.release();
         if (error) {
@@ -124,7 +124,7 @@ router.post("/questions", (req, res) => {
           CreateDate: new Date().toISOString(),
           title,
           user_user_ID: userId, // userID는 세션에서 가져온 값으로
-          NickName,
+          category, 
           Answer,
         };
 

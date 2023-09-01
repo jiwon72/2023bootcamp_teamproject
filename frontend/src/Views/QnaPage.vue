@@ -18,7 +18,7 @@
         <th>카테고리</th>
         <th>답변</th>
       </tr>
-      <tr v-for="item in qnaList" @click="goToAnswerPage" :key="item.Question_ID">
+      <tr v-for="item in qnaList" @click="goToAnswerPage(item.Question_ID)" :key="item.Question_ID">
         <td>{{ item.user_user_ID }}</td>
         <td>{{ item.title }}</td>
         <td>{{ item.content }}</td>
@@ -54,8 +54,8 @@ export default {
     goToHomePage() {
       this.$router.push("/HomePage");
     },
-    goToAnswerPage() {
-      this.$router.push("/AnswerPage");
+    goToAnswerPage(questionId) {
+      this.$router.push({ path: '/AnswerPage', query: { questionId : questionId } });
     },
     goToQuestionPage() {
       this.$router.push('/QuestionPage');

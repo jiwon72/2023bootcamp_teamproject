@@ -8,6 +8,7 @@ import MenuPage from '../Views/MenuPage.vue';
 import MovieinformationPage from '../Views/MovieinformationPage.vue';
 import QnaPage from '../Views/QnaPage.vue';
 import QuestionPage from '../Views/QuestionPage.vue';
+import AnswerPage from '../Views/AnswerPage.vue';
 import ReviewPage from '../Views/ReviewPage.vue';
 import GoReviewPage from '../Views/GoReviewPage.vue';
 import MyReviewPage from '../Views/MyReviewPage.vue';
@@ -48,6 +49,7 @@ const routes = [
     component: MovieinformationPage },
   { path: '/QnaPage', component: QnaPage },
   { path: '/QuestionPage', component: QuestionPage },
+  { path: '/AnswerPage', component: AnswerPage },
   { path: '/ReviewPage', component: ReviewPage },
   { path: '/GoReviewPage', component: GoReviewPage },
   { path: '/MyReviewPage', component: MyReviewPage },
