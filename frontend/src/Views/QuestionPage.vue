@@ -38,6 +38,7 @@
 export default {
   data() {
     return {
+      title : "",
       category: "",
       content: "",
       questions: "",
@@ -46,8 +47,9 @@ export default {
   methods: {
     async submitReview() {
       const requestData = {
-        title: this.category, 
+        title: this.title, 
         content: this.content, 
+        category: this.category
       };
 
       try {

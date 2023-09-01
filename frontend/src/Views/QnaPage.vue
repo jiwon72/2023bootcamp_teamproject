@@ -13,18 +13,19 @@
     <table>
       <tr>
         <th>질문자</th>
+        <th>제목</th>
         <th>질문</th>
         <th>카테고리</th>
         <th>답변</th>
-        <th>조회수</th>
       </tr>
-      <tr v-for="item in qnaList" :key="item.id">
-        <td>{{ item.questioner }}</td>
-        <td>{{ item.question }}</td>
-        <td>{{ item.category }}</td>
-        <td>{{ item.answer }}</td>
-        <td>{{ item.views }}</td>
+      <tr v-for="item in qnaList" @click="goToAnswerPage" :key="item.Question_ID">
+        <td>{{ item.user_user_ID }}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.content }}</td>
+        <td>{{ item.Category }}</td>
+        <td>{{ item.Answer }}</td>
       </tr>
+
     </table>
     <div v-if="selectedQuestion" class="qna-question-popup">
     <div class="qna-question-form">
@@ -53,19 +54,35 @@ export default {
     goToHomePage() {
       this.$router.push("/HomePage");
     },
+    goToAnswerPage() {
+      this.$router.push("/AnswerPage");
+    },
     goToQuestionPage() {
       this.$router.push('/QuestionPage');
     },
-    fetchQnAData() {
-      fetch("http://localhost:3000/questions") 
-        .then(response => response.json())
-        .then(data => {
-          this.qnaList = data;
-        })
-        .catch(error => {
-          console.error('Error fetching QnA data:', error);
-        });
-    },
+    async fetchQnAData() {
+  try {
+    this.isLoadingQnA = true;
+    const response = await fetch("http://localhost:3000/questions", {
+      credentials: "include",
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      this.qnaList = data.questions; // Assign 'questions' response to 'qnaList'
+    } else {
+      console.error('Failed to fetch QnA data.');
+    }
+  } catch (error) {
+    console.error('Error fetching QnA data:', error);
+  } finally {
+    this.isLoadingQnA = false; // Data loading completed
+  }
+},
        // 질문 상세 팝업 열기
     openQuestionPopup(questionId) {
       fetch(`http://localhost:3000/questions/${questionId}`)
@@ -115,6 +132,7 @@ export default {
 
     table {
         border-collapse: collapse;
+        cursor: pointer;
         
     }
 
@@ -129,6 +147,7 @@ export default {
         white-space: nowrap; /* 줄 바꿈 방지 */
        overflow: hidden; /* 내용이 너무 길면 숨김 */
        text-overflow: ellipsis; /* 내용이 너무 길면 ... 표시 */
+       cursor: pointer;
     }
     
     td{
@@ -139,6 +158,7 @@ export default {
         white-space: nowrap; /* 줄 바꿈 방지 */
         overflow: hidden; /* 내용이 너무 길면 숨김 */
         text-overflow: ellipsis; /* 내용이 너무 길면 ... 표시 */
+        cursor: pointer;
     }
 
     .qna-gogaekcenter{
