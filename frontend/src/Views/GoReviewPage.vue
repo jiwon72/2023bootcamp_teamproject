@@ -92,7 +92,7 @@
       <p>장르: 애니메이션, 미스터리</p>
     </div>
 
-    <div class="Go-re-rating-summary">
+    <div class="Go-re-rating-summary" v-if="!isLoadingReviews">
       <div class="Go-re-left-summary">
         <p>전체 평점: {{ leftaverageRating }}/5</p>
         <p>리뷰 수: {{ reviews.length }}</p>
@@ -103,7 +103,7 @@
     <div class="Go-re-reviews-container">
       <div class="Go-re-left-reviews">
         <ul>
-          <li v-for="review in leftReviews" :key="review.id" class="Go-re-review-box">
+          <li  v-for="review in leftReviews" :key="review.id"  :id="review.id" @click="goToMyReviewPage(review)" class="Go-re-review-box">
             <strong class="Go-re-rating">평점: {{ review.rating }}/5</strong>
             <br>
             <span>작성자: {{ review.nickname }}</span>
@@ -115,7 +115,7 @@
       </div>
       <div class="Go-re-right-reviews">
         <ul>
-          <li v-for="review in rightReviews" :key="review.id" @click="goToMyReviewPage" class="Go-re-review-box">
+          <li v-for="review in rightReviews" :key="review.id" @click="goToMyReviewPage(review)" class="Go-re-review-box">
             <strong class="Go-re-rating">평점: {{ review.rating }}/5</strong>
             <br>
             <span>작성자: {{ review.nickname }}</span>
@@ -150,34 +150,36 @@ export default {
   created() {
     library.add(faBars, faStar, faUser, faSearch);
   },
-    computed: {
-      leftReviews() {
-        return this.reviews.slice(0, Math.ceil(this.reviews.length / 2));
-      },
-      rightReviews() {
-        return this.reviews.slice(Math.ceil(this.reviews.length / 2));
-      }
-    },
-  
+  computed: {
+  leftReviews() {
+    if (this.reviews) {
+      return this.reviews.slice(0, Math.ceil(this.reviews.length / 2));
+    }
+    return [];
+  },
+  rightReviews() {
+    if (this.reviews) {
+      return this.reviews.slice(Math.ceil(this.reviews.length / 2));
+    }
+    return [];
+  },
+  leftaverageRating() {
+    if (this.leftReviews.length > 0) {
+      const ratingsSum = this.leftReviews.reduce((sum, review) => sum + review.rating, 0);
+      return ratingsSum / this.leftReviews.length;
+    }
+    return 0; // 또는 다른 기본값
+  },
+},
+
   data() {
     return {
       showGenre: false,
       showPlatform: false,
       showDropdown: false,
       showUserDropdown: false,
-      reviews: [
-        { id: 1, rating: 5, nickname: "나는천재", date: "2023-08-14", text: "정말 재미있는 영화였습니다!" },
-        { id: 2, rating: 3, nickname: "영화매니아", date: "2023-08-14", text: "괜찮았지만 아쉬운 부분도 있었어요." },
-        { id: 3, rating: 4, nickname: "나는바보", date: "2023-08-14" , text: "두 번 봐도 좋은 영화네요!" },
-        { id: 3, rating: 4, nickname: "나는바보", date: "2023-08-14" , text: "두 번 봐도 좋은 영화네요!" },
-        { id: 3, rating: 4, nickname: "나는바보", date: "2023-08-14" , text: "두 번 봐도 좋은 영화네요!" },
-        { id: 2, rating: 3, nickname: "영화매니아", date: "2023-08-14", text: "괜찮았지만 아쉬운 부분도 있었어요." },
-        { id: 2, rating: 3, nickname: "영화매니아", date: "2023-08-14", text: "괜찮았지만 아쉬운 부분도 있었어요." },
-        { id: 1, rating: 5, nickname: "나는천재", date: "2023-08-14", text: "정말 재미있는 영화였습니다!" },
-        { id: 1, rating: 5, nickname: "나는천재", date: "2023-08-14", text: "정말 재미있는 영화였습니다!" },
-        { id: 1, rating: 5, nickname: "나는천재", date: "2023-08-14", text: "정말 재미있는 영화였습니다!" },
-        { id: 1, rating: 5, nickname: "나는천재", date: "2023-08-14", text: "정말 재미있는 영화였습니다!" },
-      ]
+      reviews: [],
+      isLoadingReviews: true
     };
   },
   methods: {
@@ -192,9 +194,6 @@ export default {
     },
     goToLoginPage() {
       this.$router.push('/LoginPage');
-    },
-    goToMyReviewPage() {
-      this.$router.push('/MyReviewPage');
     },
     goToSelectRomance() {
       this.$router.push('/SelectRomance');
@@ -290,9 +289,45 @@ export default {
     hideDropdown() {
       this.showDropdown = false;
     },
+    // 이 메서드의 이름을 변경하여 중복을 피합니다.
+    goToMyReviewPage(review) {
+      console.log("review", review)
+
+    // 이제 reviewId를 직접 가져와서 사용할 필요가 없습니다.
+    this.$router.push({ path: '/MyReviewPage', query: { id: review.ReviewID } });
+  },
+    
+    async fetchReviews(movieId) {
+  try {
+    this.isLoadingReviews = true;
+    const response = await fetch(`http://localhost:3000/movies/${movieId}/reviews`, {
+          credentials : "include" ,
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+
+          this.reviews = result.reviews;
+        } else {
+          console.error('Failed to fetch reviews.');
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        this.isLoadingReviews = false; // 데이터 로딩 완료
+      }
+    }
+  },
+  mounted() {
+    // fetchReviews 메서드를 실행하여 리뷰를 가져오는 로직을 실행
+    this.fetchReviews(293670); // 123을 실제 영화의 movieId로 바꾸세요
   },
 };
-  
+
 
 </script>
 
@@ -508,6 +543,7 @@ export default {
     background: #f9f9f9;    /* 배경색 */
     width: 70%;
     font-size: 10px;
+    cursor: pointer;
   }
 
       .Go-re-rating{

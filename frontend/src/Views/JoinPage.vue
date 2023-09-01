@@ -43,7 +43,7 @@
           <div class="join-field">
             <label class="join-label" for="input_id">ID :</label>
             <input class="join-input" name="input_id" placeholder="아이디를 입력해주세요" v-model="user_id">
-            <button class="join-duplicate-check-button">중복확인</button>
+            <button class="join-duplicate-check-button" @click="checkDuplicateID">중복확인</button>
           </div>
         </div>
         <div class="join-input-container">
@@ -53,7 +53,7 @@
           </div>
         </div>
         <p class="join-password-hint">
-              비밀번호는 특수문자 포함 8글자 이어야 합니다.
+              비밀번호는 8글자 이상이어야 합니다.
             </p>
         <div class="join-input-container">
           <div class="join-field">
@@ -158,12 +158,13 @@ export default {
       user_birthday: '',
       user_nickname: '',
       user_id: '',
+      isDuplicate: false,
       user_pw: '',
       confirm_pw: '',
       agreed: false,
       Netflex: false,
       Disneyplus: false,
-      Tving: false,
+      AppleTV: false,
       Watcha: false,
       Wavve: false,
       romance: false,
@@ -267,6 +268,62 @@ export default {
         alert("회원가입 중 오류가 발생했습니다.");
       });
     },
+    checkDuplicateID() {
+    if (this.user_id === '') {
+      alert('아이디를 입력해주세요.');
+      return;
+    }
+
+    fetch("http://localhost:3000/auth/register/check", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userID: this.user_id,
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.isDuplicate) {
+        alert("이미 사용 중인 아이디입니다.");
+      } else {
+        alert("사용 가능한 아이디입니다.");
+      }
+    })
+    .catch((error) => {
+      console.error("오류:", error);
+      alert("아이디 중복 확인 중 오류가 발생했습니다.");
+    });
+  },
+  checkDuplicateNickname() {
+    if (this.user_nickname === '') {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+
+    fetch("http://localhost:3000/auth/register/checknick", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nickname: this.user_nickname,
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.isDuplicate) {
+        alert("이미 사용 중인 닉네임입니다.");
+      } else {
+        alert("사용 가능한 닉네임입니다.");
+      }
+    })
+    .catch((error) => {
+      console.error("오류:", error);
+      alert("닉네임 중복 확인 중 오류가 발생했습니다.");
+    });
+  },
   },
 };
 </script>

@@ -26,6 +26,14 @@
         <td>{{ item.views }}</td>
       </tr>
     </table>
+    <div v-if="selectedQuestion" class="qna-question-popup">
+    <div class="qna-question-form">
+      <h2>{{ selectedQuestion.title }}</h2>
+      <p>{{ selectedQuestion.content }}</p>
+      <p>작성자: {{ selectedQuestion.nickname }}</p>
+      <button @click="closeQuestionPopup">닫기</button>
+    </div>
+  </div>
     <footer>
       <div class="qna-foot" @click="goToQuestionPage" >질문하기</div>
     </footer>
@@ -36,7 +44,9 @@
 export default {
   data() {
     return {
-      qnaList: []
+      qnaList: [],
+      selectedQuestion: null,
+
     };
   },
   methods: {
@@ -55,11 +65,26 @@ export default {
         .catch(error => {
           console.error('Error fetching QnA data:', error);
         });
-    }
+    },
+       // 질문 상세 팝업 열기
+    openQuestionPopup(questionId) {
+      fetch(`http://localhost:3000/questions/${questionId}`)
+        .then(response => response.json())
+        .then(data => {
+          this.selectedQuestion = data;
+        })
+        .catch(error => {
+          console.error('Error fetching question details:', error);
+        });
+    },
+    // 질문 상세 팝업 닫기
+    closeQuestionPopup() {
+      this.selectedQuestion = null;
+    },
   },
   mounted() {
     this.fetchQnAData(); // 컴포넌트가 마운트될 때 QnA 데이터를 가져옵니다.
-  }
+  },
 };
 </script>
 

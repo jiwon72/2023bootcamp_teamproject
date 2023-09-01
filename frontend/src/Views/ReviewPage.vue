@@ -4,7 +4,7 @@
       Review
     </div>
     <div class="rev-input-row">
-      <input class="rev-input-field" placeholder="닉네임을 입력하세요" type="text" v-model="nickname"/>
+      <input type="text" v-model="nicknameInput" class="rev-input-field" :placeholder="nicknamePlaceholder" readonly>
       <select class="rev-rating-field rev-input-field" v-model="rating">
         <option value="">평점을 입력하세요</option>
         <option value="1">1</option>
@@ -27,15 +27,70 @@
 export default {
   data() {
     return {
+      nicknameInput: '',
       nickname: "",
       rating: "",
-      review: ""
+      review: "",
+      movieId: null,
     };
   },
+  created() {
+    this.fetchData();
+    this.movieId = this.$route.params.movieId; // 실제 라우터에서 사용하는 매개변수 이름으로 바꿔주세요
+  },
   methods: {
-    submitReview() {
-      alert('Nickname: ' + this.nickname + '\\nRating: ' + this.rating + '\\nReview: ' + this.review);
-    }
+    async submitReview() {
+      const reviewData = {
+        rating: parseFloat(this.rating),
+        content: this.review,
+        isSpoil: false // You can adjust this value based on your requirements
+      };
+      
+
+      try {
+        const response = await fetch(`http://localhost:3000/movies/293670/reviews`, {
+          credentials : "include" ,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(reviewData)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.isWrite) {
+            alert('리뷰가 성공적으로 제출되었습니다!');
+            // 폼 필드를 초기화할 수 있습니다.
+            this.nickname = "";
+            this.rating = "";
+            this.review = "";
+          } else {
+            alert('리뷰 제출에 실패했습니다.');
+          }
+        } else {
+          alert('리뷰 제출에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('리뷰 제출 오류:', error);
+      }
+    },
+    async fetchData() {
+      try {
+        const response = await fetch(`http://localhost:3000/users/profile`,  {
+          credentials : "include" });
+        const profileData = await response.json();
+
+        if (profileData.NickName) {
+          this.nicknameInput = profileData.NickName;
+          }
+          if (profileData.user_Password) {
+            this.currentPassword = profileData.user_Password;
+          }
+        } catch (error) {
+          console.error('프로필 데이터 가져오기 오류:', error);
+        }
+      },
   }
 }
 </script>

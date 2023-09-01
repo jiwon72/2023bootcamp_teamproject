@@ -71,8 +71,13 @@
     <img src="영화포스터이미지파일경로.jpg" alt="영화 포스터">
   </div>
   <div class="info-movie-details">
-    <div class="info-movie-detail-line">
-      <ul><h3 class="info-movie-title">곡성</h3></ul>
+    <div class="info-movie-top">
+        <h3 class="info-movie-title">곡성</h3>
+        <button @click="toggleGostar" class="info-gostar">
+          <span v-if="!gostarActive" class="before-star">☆</span>
+          <span v-else class="after-star">★</span>
+        </button>
+    
     </div>
     <table class="info-movie-details">
       <tr class="info-movie-detail-line">
@@ -147,6 +152,7 @@ export default {
       showGenre: false,
       showPlatform: false, 
       showUserDropdown: false,
+      gostarActive: false,
     };
   },
   methods: {
@@ -253,6 +259,51 @@ export default {
       this.showUserDropdown = !this.showUserDropdown;
 
     },
+    toggleGostar() {
+    this.gostarActive = !this.gostarActive;
+  },
+  async addToFavorites(movieId) {
+    try {
+      const response = await fetch("http://localhost:3000/users/addfavorites", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ movieId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        this.gostarActive = true; // ★ (별) 아이콘 표시
+        console.log('Favorites:', data.favorites);
+      } else {
+        console.error('Failed to add to favorites');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  },
+  async removeFromFavorites(movieId) {
+    try {
+      const response = await fetch("http://localhost:3000/users/removefavorites", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ movieId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        this.gostarActive = false; // ☆ (별) 아이콘 표시
+        console.log('Favorites:', data.favorites);
+      } else {
+        console.error('Failed to remove from favorites');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  },
   },
 }
 </script>
@@ -477,6 +528,11 @@ export default {
   margin-bottom: 20px;
   position: relative; /* Add this line */
 }
+.info-movie-top{
+  display: flex; 
+  align-items: center;
+  margin-bottom: 30px;
+}
 
 .netflix {
   font-size: 14px; 
@@ -511,8 +567,25 @@ export default {
   padding: 5px;
 }
 .info-movie-title{
-  right:30px;
   position: relative;
+  margin-right:15px;
+}
+.info-gostar{
+  border:none;
+  background-color: transparent;
+  color:rgb(65, 0, 80);
+  font-weight:bold;
+  position: relative;
+  cursor: pointer; 
+}
+.before-star,
+.after-star {
+  font-size: 40px;
+  display: inline;
+  line-height: initial;
+}
+.info-gostar:focus{
+  outline: none;
 }
 .info-movie-details td {
   border: 1px solid #ddd;
@@ -566,13 +639,6 @@ export default {
   padding: 10px; /* 내부 패딩을 설정합니다. */
   margin: 5px; /* 외부 마진을 설정합니다. */
   position: relative;
-}
-
-.netplix {
-  font-size: 14px; /* Adjust font size as needed */
-  position: absolute;
-  bottom: 0;
-  right: 0;
 }
 
 

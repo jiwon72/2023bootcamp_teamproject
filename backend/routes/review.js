@@ -30,6 +30,7 @@ const getConnection = require("../data/DBpool.js");
 
 // Edit Review from DB
 router.post("/reviews/:reviewId", (req, res) => {
+  console.log(req.session)
   if (!req.session.user) {
     return res
       .status(401)
@@ -50,6 +51,7 @@ router.post("/reviews/:reviewId", (req, res) => {
     }
     conn.query(query, values, (err, result) => {
       conn.release();
+      console.log("rows",result.affectedRows)
       if (result.affectedRows === 0) {
         return res
           .status(404)
@@ -229,6 +231,50 @@ router.post("/movies/:movieId/reviews", (req, res) => {
           .json({ message: "An error occurred", isWrite: false });
       }
       res.json({ message: "Review added successfully.", isWrite: true });
+    });
+  });
+});
+
+//새 API추가
+router.get("/reviews/:reviewId", async (req, res) => {
+  const reviewId = req.params.reviewId;
+  console.log("ReviewID:", reviewId); // 리뷰 ID가 정확하게 가져와지는지 확인
+  const query = "SELECT * FROM Review WHERE ReviewID = ?";
+  getConnection(async (conn, err) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "오류가 발생했습니다." });
+    }
+    conn.query(query, [reviewId], async (err, results) => {
+      if (err) {
+        console.log(err.message);
+        return res.status(500).json({ message: "쿼리 실행 중 오류가 발생했습니다." });
+      }
+
+      const getNickname = (userID) => {
+        return new Promise((resolve, reject) => {
+          const query = "SELECT NickName FROM user WHERE user_ID = ?";
+          conn.query(query, [userID], (err, rows) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(rows[0].NickName);
+            }
+          });
+        });
+      };
+
+      for (let i = 0; i < results.length; i++) {
+        try {
+          results[i].nickname = await getNickname(results[i].user_userID);
+        } catch (error) {
+          console.log(error);
+          conn.release();
+          return res.status(500).json({ message: "오류가 발생했습니다." });
+        }
+      }
+      conn.release();
+      res.json({ reviews: results });
     });
   });
 });

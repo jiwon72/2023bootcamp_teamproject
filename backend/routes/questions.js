@@ -98,7 +98,7 @@ router.post("/questions", (req, res) => {
   }
 
   const userId = userSession.userID; // 세션에서 userID 가져오기
-  const { title, content, NickName, Answer } = req.body; // user_user_ID는 세션에서 가져옴
+  const { title, content, Answer } = req.body; // user_user_ID는 세션에서 가져옴
 
   getConnection(function (conn) {
     const insertQuery = `
