@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+
+# Environment files
+.env
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+
+# Compiled files
+dist/
+build/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# Dependency lock files
+package-lock.json
+yarn.lock
+
+# Other OS generated files
+Thumbs.db
+.DS_Store
+
+#goorm ide setting
+goorm.manifest
