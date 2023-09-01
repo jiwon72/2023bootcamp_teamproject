@@ -138,18 +138,21 @@ router.post("/questions", (req, res) => {
 // 질문 수정
 router.post("/questions/:Question_ID", (req, res) => {
   const questionId = req.params.Question_ID;
-  const { title, content } = req.body;
+  const { title, content, category } = req.body;
 
-  getConnection(function (conn) { 
+  getConnection(function (conn) {
     const updateQuery = `
       UPDATE Question
-      SET title = ?, content = ?
+      SET
+        title = IFNULL(?, title),
+        content = IFNULL(?, content),
+        Category = IFNULL(?, category)
       WHERE Question_ID = ?
     `;
 
     conn.query(
       updateQuery,
-      [title, content, questionId],
+      [title, content, category, questionId],
       function (error, results) {
         conn.release();
         if (error) {
