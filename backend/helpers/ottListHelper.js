@@ -4,7 +4,7 @@ require("dotenv");
 
 //EXCELJS의 문제로 인해 절대 경로만 사용 가능
 const PATH =
-  "C:\\Users\\smlab\\workspace\\project_combine\\backend\\movie_info\\movieOTT.xlsx";
+  "C:\\Users\\smlab\\OneDrive\\바탕 화면\\새 폴더\\2023bootcamp_teamproject\\backend\\movie_info\\movieOTT.xlsx";
 
 async function getOttList(englishTitle, korTitle) {
   console.log(

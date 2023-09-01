@@ -13,19 +13,28 @@
     <table>
       <tr>
         <th>질문자</th>
+        <th>제목</th>
         <th>질문</th>
         <th>카테고리</th>
         <th>답변</th>
-        <th>조회수</th>
       </tr>
-      <tr v-for="item in qnaList" :key="item.id">
-        <td>{{ item.questioner }}</td>
-        <td>{{ item.question }}</td>
-        <td>{{ item.category }}</td>
-        <td>{{ item.answer }}</td>
-        <td>{{ item.views }}</td>
+      <tr v-for="item in qnaList" @click="goToAnswerPage" :key="item.Question_ID">
+        <td>{{ item.user_user_ID }}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.content }}</td>
+        <td>{{ item.Category }}</td>
+        <td>{{ item.Answer }}</td>
       </tr>
+
     </table>
+    <div v-if="selectedQuestion" class="qna-question-popup">
+    <div class="qna-question-form">
+      <h2>{{ selectedQuestion.title }}</h2>
+      <p>{{ selectedQuestion.content }}</p>
+      <p>작성자: {{ selectedQuestion.nickname }}</p>
+      <button @click="closeQuestionPopup">닫기</button>
+    </div>
+  </div>
     <footer>
       <div class="qna-foot" @click="goToQuestionPage" >질문하기</div>
     </footer>
@@ -36,30 +45,63 @@
 export default {
   data() {
     return {
-      qnaList: []
+      qnaList: [],
+      selectedQuestion: null,
+
     };
   },
   methods: {
     goToHomePage() {
       this.$router.push("/HomePage");
     },
+    goToAnswerPage() {
+      this.$router.push("/AnswerPage");
+    },
     goToQuestionPage() {
       this.$router.push('/QuestionPage');
     },
-    fetchQnAData() {
-      fetch("http://localhost:3000/questions") 
+    async fetchQnAData() {
+  try {
+    this.isLoadingQnA = true;
+    const response = await fetch("http://localhost:3000/questions", {
+      credentials: "include",
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      this.qnaList = data.questions; // Assign 'questions' response to 'qnaList'
+    } else {
+      console.error('Failed to fetch QnA data.');
+    }
+  } catch (error) {
+    console.error('Error fetching QnA data:', error);
+  } finally {
+    this.isLoadingQnA = false; // Data loading completed
+  }
+},
+       // 질문 상세 팝업 열기
+    openQuestionPopup(questionId) {
+      fetch(`http://localhost:3000/questions/${questionId}`)
         .then(response => response.json())
         .then(data => {
-          this.qnaList = data;
+          this.selectedQuestion = data;
         })
         .catch(error => {
-          console.error('Error fetching QnA data:', error);
+          console.error('Error fetching question details:', error);
         });
-    }
+    },
+    // 질문 상세 팝업 닫기
+    closeQuestionPopup() {
+      this.selectedQuestion = null;
+    },
   },
   mounted() {
     this.fetchQnAData(); // 컴포넌트가 마운트될 때 QnA 데이터를 가져옵니다.
-  }
+  },
 };
 </script>
 
@@ -90,6 +132,7 @@ export default {
 
     table {
         border-collapse: collapse;
+        cursor: pointer;
         
     }
 
@@ -104,6 +147,7 @@ export default {
         white-space: nowrap; /* 줄 바꿈 방지 */
        overflow: hidden; /* 내용이 너무 길면 숨김 */
        text-overflow: ellipsis; /* 내용이 너무 길면 ... 표시 */
+       cursor: pointer;
     }
     
     td{
@@ -114,6 +158,7 @@ export default {
         white-space: nowrap; /* 줄 바꿈 방지 */
         overflow: hidden; /* 내용이 너무 길면 숨김 */
         text-overflow: ellipsis; /* 내용이 너무 길면 ... 표시 */
+        cursor: pointer;
     }
 
     .qna-gogaekcenter{

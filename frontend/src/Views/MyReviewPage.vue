@@ -9,8 +9,8 @@
       My Review
     </div>
     <div class="rev-input-row">
-      <input class="rev-input-field" placeholder="닉네임을 입력하세요" type="text" v-model="nickname"/>
-      <select class="rev-rating-field rev-input-field" v-model="rating">
+      <input type="text" v-model="nicknameInput" class="rev-input-field" :placeholder="nicknamePlaceholder" readonly>
+      <select v-model="rating" class="rev-rating-field rev-input-field">
         <option value="">평점을 입력하세요</option>
         <option value="1">1</option>
         <option value="2">2</option>
@@ -20,11 +20,12 @@
       </select>
     </div>
     <div class="rev-textarea-footer">
-      <textarea class="rev-textarea-field" placeholder="감상평을 써주세요" v-model="review"></textarea>
+      <textarea type="text" class="rev-textarea-field" v-model="review"></textarea>
     </div>
     <div class="rev-footer-buttons">
+      <div class="rev-delete" @click="deleteReview">리뷰삭제</div>
       <div class="rev-edit" @click="editReview">리뷰수정</div>
-      <div class="rev-back" @click="backReview">돌아가기</div>
+      <!-- <div class="rev-back" @click="backReview">돌아가기</div> -->
     </div>
   </div>
 </template>
@@ -33,14 +34,116 @@
 export default {
   data() {
     return {
+      nicknameInput: '',
       nickname: "",
       rating: "",
-      review: ""
+      ratingInput:'',
+      review: "",
+      reviewInput:'',
+      reviewId : ''
     };
   },
+  created() {
+    const reviewId = this.$route.query.id;
+    this.reviewId=reviewId
+    this.fetchData();
+    this.movieId = this.$route.params.movieId; // 실제 라우터에서 사용하는 매개변수 이름으로 바꿔주세요
+    this.getReview(reviewId);
+  },
   methods: {
-    submitReview() {
-      alert('Nickname: ' + this.nickname + '\\nRating: ' + this.rating + '\\nReview: ' + this.review);
+    
+    async fetchData() {
+      try {
+        const response = await fetch(`http://localhost:3000/users/profile`,  {
+          credentials : "include" });
+        const profileData = await response.json();
+
+        if (profileData.NickName) {
+          this.nicknameInput = profileData.NickName;
+          }
+          if (profileData.user_Password) {
+            this.currentPassword = profileData.user_Password;
+          }
+        } catch (error) {
+          console.error('프로필 데이터 가져오기 오류:', error);
+        }
+      },
+      async getReview(reviewId) {
+        try {
+          const response = await fetch(`http://localhost:3000/reviews/${reviewId}`);
+          if (response.ok) {
+            const data = await response.json();
+            console.log("test", data)
+
+            this.nickname = data.reviews[0].nickname;
+            this.rating = data.reviews[0].rating;
+            this.review = data.reviews[0].content;
+          } else {
+            console.error('리뷰 가져오기 실패');
+          }
+        } catch (error) {
+          console.error('리뷰 가져오기 오류:', error);
+        }
+      },
+    async editReview() {
+      const reviewId = this.reviewId; // 리뷰 수정할 때 사용할 리뷰의 고유 ID
+      const editData = {
+        content: this.review,
+        rating: parseFloat(this.rating)
+      };
+
+      try {
+        const response = await fetch(`http://localhost:3000/reviews/${reviewId}`, {
+          credentials : "include",
+          method: 'POST', // PUT 메서드를 사용하여 리뷰 업데이트
+          headers: {
+            'Content-Type': 'application/json',
+            
+          },
+          body: JSON.stringify(editData)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.isEdit) {
+            alert('리뷰가 성공적으로 수정되었습니다!');
+            // 여기서 필요한 업데이트 로직 수행
+          } else {
+            alert('리뷰 수정에 실패했습니다.');
+          }
+        } else {
+          alert('리뷰 수정에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('리뷰 수정 오류:', error);
+      }
+    },
+    async deleteReview() {
+      const reviewId = this.reviewId; // 리뷰 삭제할 때 사용할 리뷰의 고유 ID
+
+      try {
+        const response = await fetch(`http://localhost:3000/reviews/${reviewId}`, {
+          credentials : "include" ,
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.isDelete) {
+            alert('Review deleted successfully!');
+            // 여기서 필요한 업데이트 로직 수행
+          } else {
+            alert('Failed to delete review.');
+          }
+        } else {
+          alert('Failed to delete review.');
+        }
+      } catch (error) {
+        console.error('Error deleting review:', error);
+      }
     }
   }
 }
@@ -115,6 +218,17 @@ export default {
     align-items: center;
     justify-content: flex-end;
     margin-top: 10px;
+  }
+  .rev-delete {
+    color: white;
+    background-color: rgb(65, 0, 80);
+    border: 1px solid;
+    width: 80px;
+    text-align: center;
+    padding: 6px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-left:15px;
   }
   .rev-edit {
     color: white;

@@ -38,6 +38,7 @@
 export default {
   data() {
     return {
+      title : "",
       category: "",
       content: "",
       questions: "",
@@ -45,15 +46,16 @@ export default {
   },
   methods: {
     async submitReview() {
-      // Prepare the data to be sent in the request body
       const requestData = {
-        title: this.nickname,
-        content: this.review,
+        title: this.title, 
+        content: this.content, 
+        category: this.category
       };
 
       try {
         const response = await fetch("http://localhost:3000/questions", {
           method: 'POST',
+          credentials : "include",
           headers: {
             'Content-Type': 'application/json',
           },
@@ -68,10 +70,12 @@ export default {
           // Reset the form fields
           this.nickname = "";
           this.review = "";
-        } else {
-          console.error('Error submitting question');
-          alert('질문 작성에 실패하였습니다.');
         }
+        // } else {
+        //   console.error('Error submitting question');
+        //   console.log(error)
+        //   alert('질문 작성에 실패하였습니다.');
+        // }
       } catch (error) {
         console.error('Error:', error);
         alert('오류가 발생하였습니다.');
