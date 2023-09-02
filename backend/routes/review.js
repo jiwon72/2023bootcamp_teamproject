@@ -169,6 +169,52 @@ router.get("/movies/:movieId/reviews", async (req, res) => {
     });
   });
 });
+//lookup reviews from DB by rewiewID
+router.get("/reviews/:reviewId", async (req, res) => {
+  const reviewId = req.params.reviewId;
+
+  const query = "SELECT * FROM Review WHERE ReviewID = ?";
+  getConnection(async (conn, err) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "An error occurred " });
+    }
+    conn.query(query, [reviewId], async (err, results) => {
+      if (err) {
+        console.log(err.message);
+        return res
+          .status(500)
+          .json({ message: "An error occurred during query execution" });
+      }
+
+      const getNickname = (userID) => {
+        return new Promise((resolve, reject) => {
+          const query = "SELECT NickName FROM user WHERE user_ID = ?";
+          conn.query(query, [userID], (err, rows) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(rows[0].NickName);
+            }
+          });
+        });
+      };
+
+      for (let i = 0; i < results.length; i++) {
+        try {
+          results[i].nickname = await getNickname(results[i].user_userID);
+        } catch (error) {
+          console.log(error);
+          conn.release();
+          return res.status(500).json({ message: "An error occurred" });
+        }
+      }
+      conn.release();
+      res.json({ reviews: results });
+    });
+  });
+});
+
 
 // // Write Review
 // router.post("/movies/:movieId/reviews", (req, res) => {
