@@ -267,7 +267,7 @@ export default {
         if (response.ok) {
           const result = await response.json();
 
-          this.reviews = result.reviews;
+          this.reviews = result.reviews.slice(0, 3);
         } else {
           console.error("Failed to fetch reviews.");
         }
@@ -300,7 +300,7 @@ export default {
       this.$router.push("/QnaPage");
     },
     goToReviewPage() {
-      this.$router.push("/ReviewPage");
+      this.$router.push({ path: `/ReviewPage/${this.movieId}` });
     },
     goToGoReviewPage() {
       this.$router.push({ path: `/GoReviewPage/${this.movieId}` });
