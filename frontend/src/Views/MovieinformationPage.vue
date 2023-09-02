@@ -114,8 +114,13 @@
               <ul>
                 <h3 class="info-movie-title" v-if="movie">{{ movie.title }}</h3>
               </ul>
-              <button width= 15px height=15px @click="toggleGostar" class="info-gostar">
-                <span v-if="!gostarActive" class="before-star">☆</span>
+              <button
+                width="15px"
+                height="15px"
+                @click="toggleGostar"
+                class="info-gostar"
+              >
+                <span v-if="!this.gostarActive" class="before-star">☆</span>
                 <span v-else class="after-star">★</span>
               </button>
             </div>
@@ -238,6 +243,7 @@ export default {
       const movieId =
         this.$store.state.selectedMovieId || this.$route.params.id; // Vuex 상태 또는 라우터 파라미터로부터 movieId 가져오기
       this.movieId = movieId;
+      await this.loadFavoriteMovies();
       const response = await axios.get(
         `http://localhost:3000/movies/${movieId}`
       );
@@ -361,6 +367,26 @@ export default {
       if (this.gostarActive == true) {
         this.addToFavorites(this.movieId);
       }
+      else{
+        this.removeFromFavorites(this.movieId);
+      }
+    },
+    async loadFavoriteMovies() {
+      try {
+        const response = await fetch("http://localhost:3000/users/favorites", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        const favoriteMovies = data.favorites || [];
+
+        // 현재 영화가 즐겨찾기 목록에 있는지 확인
+        this.gostarActive = !favoriteMovies.some(
+          (fav) => fav.id === this.movieId
+        );
+        console.log("gotostar:", this.gostarActive)
+      } catch (error) {
+        console.error("보관함 목록 불러오기 오류:", error);
+      }
     },
     async addToFavorites(movieId) {
       try {
@@ -394,6 +420,7 @@ export default {
         const response = await fetch(
           "http://localhost:3000/users/removefavorites",
           {
+            credentials: "include",
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -660,7 +687,7 @@ export default {
   background-color: transparent;
   color: rgb(65, 0, 80);
   font-weight: bold;
-  font-size: 24px;  /* 이 값을 조정하여 별의 크기를 변경하세요. */
+  font-size: 24px; /* 이 값을 조정하여 별의 크기를 변경하세요. */
   position: relative;
   cursor: pointer;
 }

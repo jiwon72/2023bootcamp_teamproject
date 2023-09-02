@@ -16,41 +16,39 @@
       </div>
     </header>
     <div class="mine-dropdown">
-      <div class="mine-dropdown-button" @click="toggleDropdown">정렬순 ▼</div>
+      <div class="mine-dropdown-button" @click="toggleDropdown">{{this.sortOrderText}}▼</div>
       <div class="mine-dropdown-menu" v-show="showDropdown">
-        <div class="mine-dropdown-item">최근 찜한순</div>
-        <div class="mine-dropdown-item">ㄱㄴㄷ순</div>
-        <div class="mine-dropdown-item">개봉년도순</div>
+        <div class="mine-dropdown-item" @click="setSortOrder('recent')">
+          최근 찜한순
+        </div>
+        <div class="mine-dropdown-item" @click="setSortOrder('alphabet')">
+          ㄱㄴㄷ순
+        </div>
+        <div class="mine-dropdown-item" @click="setSortOrder('year')">
+          개봉년도순
+        </div>
       </div>
     </div>
     <div class="mine-movies">
-      <!-- <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
-        <div class="mine-card" style="width: 18rem">
-          <img
-            :src="movie.posterUrl"
-            class="mine-movieposter"
-            alt="movieposter"
-          />
-          <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button
-              @click="removeFromFavorites(movie.id)"
-              class="mine-remove-button"
-            >
-              보관함 삭제
-            </button>
-          </div>
-        </div>
-      </div> -->
-      <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
+      <div v-if="isLoading">로딩 중...</div>
+      <!-- 로딩 상태를 표시 -->
+      <div
+        v-else
+        v-for="movie in sortedFavoriteMovies"
+        :key="movie.id"
+        class="mine-poster"
+      >
         <div class="mine-card" style="width: 18rem">
           <img
             :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
             class="mine-movieposter"
             alt="movieposter"
+            @click="goToMoviePage(movie.id)"
           />
+          <h5 class="mine-card-title" @click="goToMoviePage(movie.id)">
+            {{ movie.title }}
+          </h5>
           <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
             <button
               @click="removeFromFavorites(movie.id)"
               class="mine-remove-button"
@@ -60,78 +58,6 @@
           </div>
         </div>
       </div>
-      <!-- <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
-        <div class="mine-card" style="width: 18rem">
-          <img
-            :src="movie.posterUrl"
-            class="mine-movieposter"
-            alt="movieposter"
-          />
-          <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button
-              @click="removeFromFavorites(movie.id)"
-              class="mine-remove-button"
-            >
-              보관함 삭제
-            </button>
-          </div>
-        </div>
-      </div>
-      <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
-        <div class="mine-card" style="width: 18rem">
-          <img
-            :src="movie.posterUrl"
-            class="mine-movieposter"
-            alt="movieposter"
-          />
-          <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button
-              @click="removeFromFavorites(movie.id)"
-              class="mine-remove-button"
-            >
-              보관함 삭제
-            </button>
-          </div>
-        </div>
-      </div>
-      <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
-        <div class="mine-card" style="width: 18rem">
-          <img
-            :src="movie.posterUrl"
-            class="mine-movieposter"
-            alt="movieposter"
-          />
-          <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button
-              @click="removeFromFavorites(movie.id)"
-              class="mine-remove-button"
-            >
-              보관함 삭제
-            </button>
-          </div>
-        </div>
-      </div>
-      <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
-        <div class="mine-card" style="width: 18rem">
-          <img
-            :src="movie.posterUrl"
-            class="mine-movieposter"
-            alt="movieposter"
-          />
-          <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button
-              @click="removeFromFavorites(movie.id)"
-              class="mine-remove-button"
-            >
-              보관함 삭제
-            </button>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -154,23 +80,63 @@ export default {
     return {
       favoriteMovies: [],
       showDropdown: false,
+      isLoading: true,
+      sortOrder: "recent", // 추가: 정렬 순서
+      sortOrderText: "최근 찜한순",
     };
   },
+  computed: {
+    sortedFavoriteMovies() {
+      // 추가: computed 속성
+      if (this.sortOrder === "recent") {
+        return [...this.favoriteMovies].reverse();
+      }
+      if (this.sortOrder === "alphabet") {
+        return [...this.favoriteMovies].sort((a, b) =>
+          a.title.localeCompare(b.title)
+        );
+      }
+      if (this.sortOrder === "year") {
+        return [...this.favoriteMovies].sort(
+          (a, b) => a.release_date - b.release_date
+        );
+      }
+      return this.favoriteMovies;
+    },
+  },
   methods: {
+    setSortOrder(order) {
+      this.sortOrder = order;
+      if (order === "recent") {
+        this.sortOrderText = "최근 찜한순";
+      } else if (order === "alphabet") {
+        this.sortOrderText = "ㄱㄴㄷ순";
+      } else if (order === "year") {
+        this.sortOrderText = "개봉년도순";
+      }
+      this.showDropdown = false; // 드롭다운 닫기
+    },
+    goToMoviePage(movieId) {
+      this.$router.push({
+        name: "MovieinformationPage",
+        params: { id: movieId },
+      });
+    },
     goToHomePage() {
       this.$router.push("/HomePage");
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
-    loadFavoriteMovies() {
+    async loadFavoriteMovies() {
       // 보관함 목록을 가져오는 API 요청 함수 호출
-      fetch("http://localhost:3000/users/favorites", {
+      await fetch("http://localhost:3000/users/favorites", {
         credentials: "include",
       })
         .then((response) => response.json())
         .then((data) => {
           this.favoriteMovies = data.favorites || [];
+          this.isLoading = false;
         })
         .catch((error) => {
           console.error("보관함 목록 불러오기 오류:", error);
