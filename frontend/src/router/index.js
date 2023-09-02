@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import FirstPage from '../Views/FirstPage.vue'; 
+import FirstPage from '../Views/FirstPage.vue';
 import LoginPage from '../Views/LoginPage.vue';
 import JoinPage from '../Views/JoinPage.vue';
 import HomePage from '../Views/HomePage.vue';
@@ -46,12 +46,13 @@ const routes = [
   {
     path: '/movie/:id',
     name: 'MovieinformationPage',
-    component: MovieinformationPage },
+    component: MovieinformationPage
+  },
   { path: '/QnaPage', component: QnaPage },
   { path: '/QuestionPage', component: QuestionPage },
   { path: '/AnswerPage', component: AnswerPage },
   { path: '/ReviewPage', component: ReviewPage },
-  { path: '/GoReviewPage', component: GoReviewPage },
+  { path: '/GoReviewPage/:id', component: GoReviewPage },
   { path: '/MyReviewPage', component: MyReviewPage },
   { path: '/ModifyPage', component: ModifyPage },
   { path: '/SelectRomance', component: SelectRomance },
