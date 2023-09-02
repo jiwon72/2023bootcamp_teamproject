@@ -36,7 +36,8 @@ export default {
   },
   created() {
     this.fetchData();
-    this.movieId = this.$route.params.movieId; // 실제 라우터에서 사용하는 매개변수 이름으로 바꿔주세요
+        console.log(this.$route.params)
+    this.movieId = this.$route.params.id; // 실제 라우터에서 사용하는 매개변수 이름으로 바꿔주세요
   },
   methods: {
     async submitReview() {
@@ -48,7 +49,7 @@ export default {
       
 
       try {
-        const response = await fetch(`http://localhost:3000/movies/293670/reviews`, {
+        const response = await fetch(`http://localhost:3000/movies/${this.movieId}/reviews`, {
           credentials : "include" ,
           method: 'POST',
           headers: {

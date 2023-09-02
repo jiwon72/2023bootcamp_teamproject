@@ -51,7 +51,7 @@ const routes = [
   { path: '/QnaPage', component: QnaPage },
   { path: '/QuestionPage', component: QuestionPage },
   { path: '/AnswerPage', component: AnswerPage },
-  { path: '/ReviewPage', component: ReviewPage },
+  { path: '/ReviewPage/:id', component: ReviewPage },
   { path: '/GoReviewPage/:id', component: GoReviewPage },
   { path: '/MyReviewPage', component: MyReviewPage },
   { path: '/ModifyPage', component: ModifyPage },
