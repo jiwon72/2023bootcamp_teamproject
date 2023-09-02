@@ -3,40 +3,63 @@
     <div class="Go-re-top-bar">
       <div class="Go-re-icon-title">
         <font-awesome-icon :icon="['fas', 'bars']" />
-        <img @click="goToHomePage"
-            src="/images/logo2.1.png"
-            class="logo"
-            alt="logo"
-          />
+        <img
+          @click="goToHomePage"
+          src="/images/logo2.1.png"
+          class="logo"
+          alt="logo"
+        />
       </div>
       <div class="Go-re-search-box-centered">
         <div class="Go-re-search-box-container">
           <input class="Go-re-search-box" type="text" placeholder="영화 검색" />
-          <button @click="goToMenuPage" class="Go-re-search-button" type="submit">
-            <font-awesome-icon :icon="['fas', 'search']"/>
+          <button
+            @click="goToMenuPage"
+            class="Go-re-search-button"
+            type="submit"
+          >
+            <font-awesome-icon :icon="['fas', 'search']" />
           </button>
         </div>
       </div>
       <div class="Go-re-user-icons">
-        <font-awesome-icon :icon="['fas', 'star']" class="Go-re-user-star" @click="goToMinePage"/>
-        <font-awesome-icon :icon="['fas', 'user']" class="Go-re-user-icon" @click="toggleUserDropdown"/>
+        <font-awesome-icon
+          :icon="['fas', 'star']"
+          class="Go-re-user-star"
+          @click="goToMinePage"
+        />
+        <font-awesome-icon
+          :icon="['fas', 'user']"
+          class="Go-re-user-icon"
+          @click="toggleUserDropdown"
+        />
         <div class="Go-re-user-dropdown" :class="{ active: showUserDropdown }">
-          <div @click="goToModifyPage" class="Go-re-user-dropdown-item">프로필 관리</div>
-          <div @click="goToQnaPage" class="Go-re-user-dropdown-item">고객센터</div>
-          <div @click="goToLoginPage" class="Go-re-user-dropdown-item">로그아웃</div>
+          <div @click="goToModifyPage" class="Go-re-user-dropdown-item">
+            프로필 관리
+          </div>
+          <div @click="goToQnaPage" class="Go-re-user-dropdown-item">
+            고객센터
+          </div>
+          <div @click="goToLoginPage" class="Go-re-user-dropdown-item">
+            로그아웃
+          </div>
         </div>
       </div>
     </div>
   </header>
   <div class="Go-re-content-container">
     <div class="Go-re-left_list">
-      <div class="Go-re-select-genre" @mouseenter="toggleGenreMenu">장르 선택</div>
+      <div class="Go-re-select-genre" @mouseenter="toggleGenreMenu">
+        장르 선택
+      </div>
       <div class="Go-re-genre-menu" v-show="showGenre" @mouseleave="hideMenus">
         <div @click="goToSelectRomance" class="Go-re-genre-item">로맨스</div>
         <div @click="goToSelectComedy" class="Go-re-genre-item">코미디</div>
         <div @click="goToSelectHorror" class="Go-re-genre-item">공포</div>
         <div @click="goToSelectThriller" class="Go-re-genre-item">스릴러</div>
-        <div @click="goToSelectAnimation" class="Go-re-genre-item">애니메이션</div>
+        <div @click="goToSelectAnimation" class="Go-re-genre-item">
+          애니메이션
+        </div>
         <div @click="goToSelectDrama" class="Go-re-genre-item">드라마</div>
         <div @click="goToSelectFantasy" class="Go-re-genre-item">판타지</div>
         <div @click="goToSelectSF" class="Go-re-genre-item">SF</div>
@@ -53,9 +76,17 @@
       <div class="Go-re-select-platform" @mouseenter="togglePlatformMenu">
         플랫폼 선택
       </div>
-      <div class="Go-re-platform-menu" v-show="showPlatform" @mouseleave="hideMenus">
-        <div @click="goToSelectNetflix" class="Go-re-platform-item">넷플릭스</div>
-        <div @click="goToSelectDisneyplus" class="Go-re-platform-item">디즈니플러스</div>
+      <div
+        class="Go-re-platform-menu"
+        v-show="showPlatform"
+        @mouseleave="hideMenus"
+      >
+        <div @click="goToSelectNetflix" class="Go-re-platform-item">
+          넷플릭스
+        </div>
+        <div @click="goToSelectDisneyplus" class="Go-re-platform-item">
+          디즈니플러스
+        </div>
         <div @click="goToSelectWavve" class="Go-re-platform-item">웨이브</div>
         <div @click="goToSelectTving" class="Go-re-platform-item">티빙</div>
         <div @click="goToSelectWatcha" class="Go-re-platform-item">왓차</div>
@@ -66,69 +97,98 @@
         <div class="Go-re-top-10">TOP10</div>
         <div class="Go-re-dropdown" @click="toggleDropdown">
           정렬순 ▼
-          <div class="Go-re-dropdown-menu" v-show="showDropdown" @mouseleave="hideDropdown">
+          <div
+            class="Go-re-dropdown-menu"
+            v-show="showDropdown"
+            @mouseleave="hideDropdown"
+          >
             <div class="Go-re-dropdown-item">현재 상영중인 영화</div>
             <div class="Go-re-dropdown-item">OTT 인기영화</div>
           </div>
         </div>
       </div>
       <div class="Go-re-right-content">
-    
-          <div class="Go-re-dropdown-menu" v-show="showDropdown" @mouseleave="hideDropdown">
-            <div class="Go-re-dropdown-item">현재 상영중인 영화</div>
-            <div class="Go-re-dropdown-item">OTT 인기영화</div>
+        <div
+          class="Go-re-dropdown-menu"
+          v-show="showDropdown"
+          @mouseleave="hideDropdown"
+        >
+          <div class="Go-re-dropdown-item">현재 상영중인 영화</div>
+          <div class="Go-re-dropdown-item">OTT 인기영화</div>
+        </div>
+
+        <div class="Go-re-container">
+          <h1 class="Go-re-main">영화 리뷰</h1>
+          <h2 class="Go-re-main2">{{ this.movie.title }}</h2>
+
+          <div class="Go-re-movie-info">
+            <p>감독: {{ movie.director }}</p>
+            <p>
+              배우:
+              {{ movie.actors ? movie.actors.slice(0, 5).join(", ") : "" }}
+            </p>
+            <p>개봉일:{{ movie.release_date }}</p>
+            <p>
+              장르:
+              {{
+                movie.genres
+                  ? getgenreName(movie.genres)
+                  : ""
+              }}
+            </p>
           </div>
-      
 
-  <div class="Go-re-container">
-    <h1 class="Go-re-main">영화 리뷰</h1>
-    <h2 class="Go-re-main2"> 제목 : 명탐정코난: 흑철의 어영 </h2>
+          <div class="Go-re-rating-summary" v-if="!isLoadingReviews">
+            <div class="Go-re-left-summary">
+              <p>전체 평점: {{ leftaverageRating }}/5</p>
+              <p>리뷰 수: {{ reviews.length }}</p>
+            </div>
+          </div>
 
-    
-    <div class="Go-re-movie-info">
-      <p>감독: 선오쿠 모리</p>
-      <p>배우: 민미, 유카리 타락키</p>
-      <p>개봉일: 2023-04-14</p>
-      <p>장르: 애니메이션, 미스터리</p>
-    </div>
-
-    <div class="Go-re-rating-summary" v-if="!isLoadingReviews">
-      <div class="Go-re-left-summary">
-        <p>전체 평점: {{ leftaverageRating }}/5</p>
-        <p>리뷰 수: {{ reviews.length }}</p>
-      </div>
-
-    </div>
-
-    <div class="Go-re-reviews-container">
-      <div class="Go-re-left-reviews">
-        <ul>
-          <li  v-for="review in leftReviews" :key="review.id"  :id="review.id" @click="goToMyReviewPage(review)" class="Go-re-review-box">
-            <strong class="Go-re-rating">평점: {{ review.rating }}/5</strong>
-            <br>
-            <span>작성자: {{ review.nickname }}</span>
-            <br>
-            <span>작성일: {{ review.date }}</span>
-            <p>{{ review.text }}</p>
-          </li>
-        </ul>
-      </div>
-      <div class="Go-re-right-reviews">
-        <ul>
-          <li v-for="review in rightReviews" :key="review.id" @click="goToMyReviewPage(review)" class="Go-re-review-box">
-            <strong class="Go-re-rating">평점: {{ review.rating }}/5</strong>
-            <br>
-            <span>작성자: {{ review.nickname }}</span>
-            <br>
-                <span>작성일: {{ review.date }}</span>
-                <p>{{ review.text }}</p>
-              </li>
-            </ul>
+          <div class="Go-re-reviews-container">
+            <div class="Go-re-left-reviews">
+              <ul>
+                <li
+                  v-for="review in leftReviews"
+                  :key="review.id"
+                  :id="review.id"
+                  @click="goToMyReviewPage(review)"
+                  class="Go-re-review-box"
+                >
+                  <strong class="Go-re-rating"
+                    >평점: {{ review.rating }}/5</strong
+                  >
+                  <br />
+                  <span>작성자: {{ review.nickname }}</span>
+                  <br />
+                  <span>작성일: {{ review.CreateDate ? review.CreateDate.slice(0,10) : "" }}</span>
+                  <p>{{ review.IsSpoil ? "스포일러가 포함되어 있습니다.":review.content   }}</p>
+                </li>
+              </ul>
+            </div>
+            <div class="Go-re-right-reviews">
+              <ul>
+                <li
+                  v-for="review in rightReviews"
+                  :key="review.id"
+                  @click="goToMyReviewPage(review)"
+                  class="Go-re-review-box"
+                >
+                  <strong class="Go-re-rating"
+                    >평점: {{ review.rating }}/5</strong
+                  >
+                  <br />
+                  <span>작성자: {{ review.nickname }}</span>
+                  <br />
+                  <span>작성일: {{ review.CreateDate ? review.CreateDate.slice(0,10) : "" }}</span>
+                  <p>{{ review.IsSpoil ? "스포일러가 포함되어 있습니다.":review.content   }}</p>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -150,27 +210,48 @@ export default {
   created() {
     library.add(faBars, faStar, faUser, faSearch);
   },
+  async mounted() {
+    await this.$nextTick(); // DOM 업데이트를 기다립니다.
+
+    // fetchReviews 메서드를 실행하여 리뷰를 가져오는 로직을 실행
+
+    const movieId = this.$route.params.id; // Vuex 상태 또는 라우터 파라미터로부터 movieId 가져오기
+    await fetch(`http://localhost:3000/movies/${movieId}`)
+      .then((response) => response.json())
+      .then((result) => {
+        this.movie = result;
+        console.log(this.movie);
+      });
+
+    console.log("movieId", movieId); // 123이 출력되어야 합니다. (실제 영화의 movieId
+    this.fetchReviews(movieId); // 123을 실제 영화의 movieId로 바꾸세요
+  },
+
   computed: {
-  leftReviews() {
-    if (this.reviews) {
-      return this.reviews.slice(0, Math.ceil(this.reviews.length / 2));
-    }
-    return [];
+    leftReviews() {
+      if (this.reviews) {
+        return this.reviews.slice(0, Math.ceil(this.reviews.length / 2));
+      }
+      return [];
+    },
+
+    rightReviews() {
+      if (this.reviews) {
+        return this.reviews.slice(Math.ceil(this.reviews.length / 2));
+      }
+      return [];
+    },
+    leftaverageRating() {
+      if (this.leftReviews.length > 0) {
+        const ratingsSum = this.leftReviews.reduce(
+          (sum, review) => sum + review.rating,
+          0
+        );
+        return ratingsSum / this.leftReviews.length;
+      }
+      return 0; // 또는 다른 기본값
+    },
   },
-  rightReviews() {
-    if (this.reviews) {
-      return this.reviews.slice(Math.ceil(this.reviews.length / 2));
-    }
-    return [];
-  },
-  leftaverageRating() {
-    if (this.leftReviews.length > 0) {
-      const ratingsSum = this.leftReviews.reduce((sum, review) => sum + review.rating, 0);
-      return ratingsSum / this.leftReviews.length;
-    }
-    return 0; // 또는 다른 기본값
-  },
-},
 
   data() {
     return {
@@ -179,90 +260,94 @@ export default {
       showDropdown: false,
       showUserDropdown: false,
       reviews: [],
-      isLoadingReviews: true
+      isLoadingReviews: true,
+      movie: {},
     };
   },
   methods: {
+    getgenreName(genres) {
+      return genres.map((genre) => genre.name).join(" ");
+    },
     goToHomePage() {
-      this.$router.push('/HomePage');
+      this.$router.push("/HomePage");
     },
     goToModifyPage() {
-      this.$router.push('/ModifyPage');
+      this.$router.push("/ModifyPage");
     },
     goToQnaPage() {
-      this.$router.push('/QnaPage');
+      this.$router.push("/QnaPage");
     },
     goToLoginPage() {
-      this.$router.push('/LoginPage');
+      this.$router.push("/LoginPage");
     },
     goToSelectRomance() {
-      this.$router.push('/SelectRomance');
+      this.$router.push("/SelectRomance");
     },
     goToSelectComedy() {
-      this.$router.push('/SelectComedy');
+      this.$router.push("/SelectComedy");
     },
     goToSelectHorror() {
-      this.$router.push('/SelectHorror');
+      this.$router.push("/SelectHorror");
     },
     goToSelectThriller() {
-      this.$router.push('/SelectThriller');
+      this.$router.push("/SelectThriller");
     },
     goToSelectAnimation() {
-      this.$router.push('/SelectAnimation');
+      this.$router.push("/SelectAnimation");
     },
     goToSelectDrama() {
-      this.$router.push('/SelectDrama');
+      this.$router.push("/SelectDrama");
     },
     goToSelectFantasy() {
-      this.$router.push('/SelectFantasy');
+      this.$router.push("/SelectFantasy");
     },
     goToSelectSF() {
-      this.$router.push('/SelectSF');
+      this.$router.push("/SelectSF");
     },
     goToSelectMystery() {
-      this.$router.push('/SelectMystery');
+      this.$router.push("/SelectMystery");
     },
     goToSelectCrime() {
-      this.$router.push('/SelectCrime');
+      this.$router.push("/SelectCrime");
     },
     goToSelectMusic() {
-      this.$router.push('/SelectMusic');
+      this.$router.push("/SelectMusic");
     },
     goToSelectAction() {
-      this.$router.push('/SelectAction');
+      this.$router.push("/SelectAction");
     },
     goToSelectHistory() {
-      this.$router.push('/SelectHistory');
+      this.$router.push("/SelectHistory");
     },
     goToSelectFamily() {
-      this.$router.push('/SelectFamily');
+      this.$router.push("/SelectFamily");
     },
     goToSelectWar() {
-      this.$router.push('/SelectWar');
+      this.$router.push("/SelectWar");
     },
     goToSelectWestern() {
-      this.$router.push('/SelectWestern');
+      this.$router.push("/SelectWestern");
     },
     goToSelectAdventure() {
-      this.$router.push('/SelectAdventure');
+      this.$router.push("/SelectAdventure");
     },
     goToSelectNetflix() {
-      this.$router.push('/SelectNetflix');
+      this.$router.push("/SelectNetflix");
     },
     goToSelectDisneyplus() {
-      this.$router.push('/SelectDisneyplus');
+      this.$router.push("/SelectDisneyplus");
     },
     goToSelectWavve() {
-      this.$router.push('/SelectWavve');
+      this.$router.push("/SelectWavve");
     },
     goToSelectTving() {
-      this.$router.push('/SelectTving');
+      this.$router.push("/SelectTving");
     },
     goToSelectWatcha() {
-      this.$router.push('/SelectWatcha');
+      this.$router.push("/SelectWatcha");
     },
     goToMovieinformationPage() {
-      this.$router.push('/MovieinformationPage');
+      this.$router.push("/MovieinformationPage");
     },
     toggleGenreMenu: function () {
       this.showGenre = !this.showGenre;
@@ -291,44 +376,44 @@ export default {
     },
     // 이 메서드의 이름을 변경하여 중복을 피합니다.
     goToMyReviewPage(review) {
-      console.log("review", review)
+      console.log("review", review);
 
-    // 이제 reviewId를 직접 가져와서 사용할 필요가 없습니다.
-    this.$router.push({ path: '/MyReviewPage', query: { id: review.ReviewID } });
-  },
-    
+      // 이제 reviewId를 직접 가져와서 사용할 필요가 없습니다.
+      this.$router.push({
+        path: "/MyReviewPage",
+        query: { id: review.ReviewID },
+      });
+    },
+
     async fetchReviews(movieId) {
-  try {
-    this.isLoadingReviews = true;
-    const response = await fetch(`http://localhost:3000/movies/${movieId}/reviews`, {
-          credentials : "include" ,
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+      try {
+        this.isLoadingReviews = true;
+        const response = await fetch(
+          `http://localhost:3000/movies/${movieId}/reviews`,
+          {
+            credentials: "include",
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        });
+        );
 
         if (response.ok) {
           const result = await response.json();
 
           this.reviews = result.reviews;
         } else {
-          console.error('Failed to fetch reviews.');
+          console.error("Failed to fetch reviews.");
         }
       } catch (error) {
-        console.error('Error fetching reviews:', error);
+        console.error("Error fetching reviews:", error);
       } finally {
         this.isLoadingReviews = false; // 데이터 로딩 완료
       }
-    }
-  },
-  mounted() {
-    // fetchReviews 메서드를 실행하여 리뷰를 가져오는 로직을 실행
-    this.fetchReviews(293670); // 123을 실제 영화의 movieId로 바꾸세요
+    },
   },
 };
-
-
 </script>
 
 <style scoped>
@@ -337,7 +422,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  margin-top:5px
+  margin-top: 5px;
 }
 
 .Go-re-icon-title {
@@ -346,7 +431,7 @@ export default {
   font-size: 25px;
   color: rgb(65, 0, 80);
   margin-right: 10px;
-  margin-left:10px;
+  margin-left: 10px;
 }
 
 .logo {
@@ -386,8 +471,8 @@ export default {
   display: flex;
   align-items: center;
   position: relative;
-  border-radius: 20px; 
-  background-color: rgba(65, 0, 80, 0.1); 
+  border-radius: 20px;
+  background-color: rgba(65, 0, 80, 0.1);
   padding: 2px;
 }
 .Go-re-user-icons {
@@ -437,7 +522,6 @@ export default {
   background-color: rgba(65, 0, 80, 0.1);
 }
 
-
 .Go-re-content-container {
   display: flex;
   flex-grow: 1;
@@ -450,7 +534,7 @@ export default {
   padding: 15px;
   background-color: none;
   width: calc(100vw / 6);
-  min-height: 85vh; 
+  min-height: 85vh;
   position: relative;
   border-right: 2px solid rgb(65, 0, 80);
 }
@@ -489,7 +573,7 @@ export default {
   font-weight: bold;
   color: rgb(65, 0, 80);
   margin-right: 10px;
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
 }
 .Go-re-dropdown {
   position: relative;
@@ -502,7 +586,7 @@ export default {
   background-color: none;
   border-radius: 4px;
   border: 2px solid rgb(65, 0, 80);
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
 }
 
 .Go-re-dropdown-menu {
@@ -527,62 +611,63 @@ export default {
   background-color: #f1f1f1;
 }
 .Go-re-container {
-    margin: 0 2%; /* 양쪽 여백 설정 */
-    flex: 1;
-    display: flex;
-    height: calc(100vh - 10px);
-    flex-direction: column;
-    position: relative;
-  }
+  margin: 0 2%; /* 양쪽 여백 설정 */
+  flex: 1;
+  display: flex;
+  height: calc(100vh - 10px);
+  flex-direction: column;
+  position: relative;
+}
 
-      .Go-re-review-box {
-    border: 1px solid #ccc; /* 테두리 */
-    padding: 10px;          /* 안쪽 여백 */
-    margin: 10px 0;         /* 위아래 여백 */
-    border-radius: 5px;     /* 모서리 둥글게 */
-    background: #f9f9f9;    /* 배경색 */
-    width: 70%;
-    font-size: 10px;
-    cursor: pointer;
-  }
+.Go-re-review-box {
+  border: 1px solid #ccc; /* 테두리 */
+  padding: 10px; /* 안쪽 여백 */
+  margin: 10px 0; /* 위아래 여백 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  background: #f9f9f9; /* 배경색 */
+  width: 70%;
+  font-size: 10px;
+  cursor: pointer;
+}
 
-      .Go-re-rating{
-        font-size: 15px;
-  }
-      
-      .Go-re-main{
-        color: rgb(65, 0, 80);
-        font-size: 20px;
-        font-weight: bold;
-  }
+.Go-re-rating {
+  font-size: 15px;
+}
 
-      .Go-re-main2{
-        color: rgb(65, 0, 80);
-        font-size: 12px;
-  }
+.Go-re-main {
+  color: rgb(65, 0, 80);
+  font-size: 20px;
+  font-weight: bold;
+}
 
-    .Go-re-movie-info {
-    padding: 5px;
-    background: #f0f0f0;
-    margin-bottom: 5px;
-    width: 87%;
-    font-size: 8px;
-    font-weight: bold;
-    border-radius: 10px;
-  }
+.Go-re-main2 {
+  color: rgb(65, 0, 80);
+  font-size: 12px;
+}
 
-  .Go-re-rating-summary {
-    display: flex; /* flexbox 레이아웃 적용 */
-    padding: 5px;
-    background: #f0f0f0;
-    margin-bottom: 5px;
-    font-weight: bold;
-    width: 87%;
-    font-size: 5px;
-    border-radius: 10px;
-    justify-content: space-between;
-  }
-.Go-re-left-summary, .Go-re-right-summary {
+.Go-re-movie-info {
+  padding: 5px;
+  background: #f0f0f0;
+  margin-bottom: 5px;
+  width: 87%;
+  font-size: 8px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.Go-re-rating-summary {
+  display: flex; /* flexbox 레이아웃 적용 */
+  padding: 5px;
+  background: #f0f0f0;
+  margin-bottom: 5px;
+  font-weight: bold;
+  width: 87%;
+  font-size: 5px;
+  border-radius: 10px;
+  justify-content: space-between;
+}
+.Go-re-left-summary,
+.Go-re-right-summary {
   width: 50%; /* 각 칸의 너비를 50%로 설정 */
 }
 
@@ -597,5 +682,4 @@ export default {
 }
 @import "~bootstrap/dist/css/bootstrap.min.css";
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
-
 </style>
