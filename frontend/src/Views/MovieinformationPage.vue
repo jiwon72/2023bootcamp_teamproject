@@ -98,7 +98,7 @@
         <h2 class="info-ott-title-left">영화 정보</h2>
         <h2 class="info-ott-title-right">시청가능한 ott</h2>
       </div>
-      <div class="info-movie-list">
+      <div v-if="!isLoading" class="info-movie-list">
         <div class="info-movie-item">
           <div class="info-movie-poster" v-if="movie && movie" :key="movie.id">
             <div class="info-movie-poster">
@@ -169,28 +169,22 @@
                 더 많은 리뷰 보기
               </button>
               <ul>
-                <li>
-                  <span>Juni0****</span>
-                  <span>평점: 9/10</span>
+                <li v-for="review in reviews" :key="review.id">
+                  <span>{{review.nickname}}</span><br>
+                  <span>평점: {{review.rating}}/10</span>
                   <p>
-                    인상 깊은 연기에 몰입감 있는 스토리와 한번쯤 생각해 볼만한
-                    내용
+                    {{review.IsSpoil ? "스포일러를 포함하고 있습니다." : review.content.slice(0, 100) + '...'}}
                   </p>
                 </li>
                 <br />
-                <li>
-                  <span>HIhi2****</span>
-                  <span>평점: 8/10</span>
-                  <p>
-                    극장에서 보는데 마지막10분은 아 진짜 살벌했음. 나도 모르게
-                    아 소리나옴 여지껏 본 공 포영화 중에서 걸작이라 봅니다
-                  </p>
-                </li>
               </ul>
             </div>
           </div>
           <p class="netflix" v-if="movie">{{ getottName(movie.ottList) }}</p>
         </div>
+      </div>
+      <div v-else>
+        <p>영화 정보를 불러오는 중입니다...</p>
       </div>
       <div class="info-write-review">
         <button
@@ -235,6 +229,7 @@ export default {
       genreName: [],
       ottName: [],
       movieId: null,
+      reviews: [],
     };
   },
   async mounted() {
@@ -252,8 +247,37 @@ export default {
       console.error("Error loading movie data:", error);
     }
     this.isLoading = false; // 데이터 로딩 완료
+    this.fetchReviews(this.movieId);
   },
   methods: {
+    async fetchReviews(movieId) {
+      try {
+        this.isLoadingReviews = true;
+        const response = await fetch(
+          `http://localhost:3000/movies/${movieId}/reviews`,
+          {
+            credentials: "include",
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const result = await response.json();
+
+          this.reviews = result.reviews;
+        } else {
+          console.error("Failed to fetch reviews.");
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      } finally {
+        this.isLoadingReviews = false; // 데이터 로딩 완료
+      }
+    },
+
     getgenreName(genres) {
       return genres.map((genre) => genre.name).join(" ");
     },
@@ -279,7 +303,7 @@ export default {
       this.$router.push("/ReviewPage");
     },
     goToGoReviewPage() {
-      this.$router.push("/GoReviewPage");
+      this.$router.push({ path: `/GoReviewPage/${this.movieId}` });
     },
     goToSelectRomance() {
       this.$router.push("/SelectRomance");
@@ -366,8 +390,7 @@ export default {
       this.gostarActive = !this.gostarActive;
       if (this.gostarActive == true) {
         this.addToFavorites(this.movieId);
-      }
-      else{
+      } else {
         this.removeFromFavorites(this.movieId);
       }
     },
@@ -383,7 +406,7 @@ export default {
         this.gostarActive = !favoriteMovies.some(
           (fav) => fav.id === this.movieId
         );
-        console.log("gotostar:", this.gostarActive)
+        console.log("gotostar:", this.gostarActive);
       } catch (error) {
         console.error("보관함 목록 불러오기 오류:", error);
       }
