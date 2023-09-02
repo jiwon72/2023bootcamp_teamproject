@@ -114,7 +114,7 @@
               <ul>
                 <h3 class="info-movie-title" v-if="movie">{{ movie.title }}</h3>
               </ul>
-              <button @click="toggleGostar" class="info-gostar">
+              <button width= 15px height=15px @click="toggleGostar" class="info-gostar">
                 <span v-if="!gostarActive" class="before-star">☆</span>
                 <span v-else class="after-star">★</span>
               </button>
@@ -380,6 +380,7 @@ export default {
         if (response.ok) {
           const data = await response.json();
           this.gostarActive = true; // ★ (별) 아이콘 표시
+          alert("보관함에 추가되었습니다.");
           console.log("Favorites:", data.favorites);
         } else {
           console.error("Failed to add to favorites");
@@ -415,7 +416,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .info-top-bar {
   display: flex;
@@ -660,12 +660,13 @@ export default {
   background-color: transparent;
   color: rgb(65, 0, 80);
   font-weight: bold;
+  font-size: 24px;  /* 이 값을 조정하여 별의 크기를 변경하세요. */
   position: relative;
   cursor: pointer;
 }
-.before-star,
-.after-star {
-  font-size: 40px;
+.info-gostar .before-star,
+.info-gostar .after-star {
+  font-size: 25px;
   display: inline;
   line-height: initial;
 }
