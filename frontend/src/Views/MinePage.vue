@@ -24,7 +24,43 @@
       </div>
     </div>
     <div class="mine-movies">
+      <!-- <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
+        <div class="mine-card" style="width: 18rem">
+          <img
+            :src="movie.posterUrl"
+            class="mine-movieposter"
+            alt="movieposter"
+          />
+          <div class="mine-card-body">
+            <h5 class="mine-card-title">{{ movie.title }}</h5>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
+          </div>
+        </div>
+      </div> -->
       <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
+        <div class="mine-card" style="width: 18rem">
+          <img
+            :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
+            class="mine-movieposter"
+            alt="movieposter"
+          />
+          <div class="mine-card-body">
+            <h5 class="mine-card-title">{{ movie.title }}</h5>
+            <button
+              @click="removeFromFavorites(movie.id)"
+              class="mine-remove-button"
+            >
+              보관함 삭제
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
         <div class="mine-card" style="width: 18rem">
           <img
             :src="movie.posterUrl"
@@ -95,43 +131,7 @@
             </button>
           </div>
         </div>
-      </div>
-      <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
-        <div class="mine-card" style="width: 18rem">
-          <img
-            :src="movie.posterUrl"
-            class="mine-movieposter"
-            alt="movieposter"
-          />
-          <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button
-              @click="removeFromFavorites(movie.id)"
-              class="mine-remove-button"
-            >
-              보관함 삭제
-            </button>
-          </div>
-        </div>
-      </div>
-      <div v-for="movie in favoriteMovies" :key="movie.id" class="mine-poster">
-        <div class="mine-card" style="width: 18rem">
-          <img
-            :src="movie.posterUrl"
-            class="mine-movieposter"
-            alt="movieposter"
-          />
-          <div class="mine-card-body">
-            <h5 class="mine-card-title">{{ movie.title }}</h5>
-            <button
-              @click="removeFromFavorites(movie.id)"
-              class="mine-remove-button"
-            >
-              보관함 삭제
-            </button>
-          </div>
-        </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -204,6 +204,7 @@ export default {
     removeFromFavorites(movieId) {
       // 보관함 삭제 API 요청 함수 호출
       fetch("http://localhost:3000/users/removefavorites", {
+        credentials: "include",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -213,7 +214,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           if (data.favorites) {
-            this.favoriteMovies = data.favorites;
+            this.favoriteMovies = this.loadFavoriteMovies();
             alert(data.message || "보관함에서 삭제되었습니다.");
           } else {
             alert(data.message || "보관함 삭제에 실패하였습니다.");
