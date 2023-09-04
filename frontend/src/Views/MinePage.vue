@@ -16,7 +16,9 @@
       </div>
     </header>
     <div class="mine-dropdown">
-      <div class="mine-dropdown-button" @click="toggleDropdown">{{this.sortOrderText}}▼</div>
+      <div class="mine-dropdown-button" @click="toggleDropdown">
+        {{ this.sortOrderText }}▼
+      </div>
       <div class="mine-dropdown-menu" v-show="showDropdown">
         <div class="mine-dropdown-item" @click="setSortOrder('recent')">
           최근 찜한순
@@ -87,21 +89,22 @@ export default {
   },
   computed: {
     sortedFavoriteMovies() {
+      let result = this.favoriteMovies;
       // 추가: computed 속성
       if (this.sortOrder === "recent") {
-        return [...this.favoriteMovies].reverse();
+        result = [...this.favoriteMovies].reverse();
       }
       if (this.sortOrder === "alphabet") {
-        return [...this.favoriteMovies].sort((a, b) =>
+        result = [...this.favoriteMovies].sort((a, b) =>
           a.title.localeCompare(b.title)
         );
       }
       if (this.sortOrder === "year") {
-        return [...this.favoriteMovies].sort(
-          (a, b) => a.release_date - b.release_date
+        result = [...this.favoriteMovies].sort((a, b) =>
+          a.release_date.localeCompare(b.release_date)
         );
       }
-      return this.favoriteMovies;
+      return result;
     },
   },
   methods: {
@@ -129,6 +132,7 @@ export default {
       this.showDropdown = !this.showDropdown;
     },
     async loadFavoriteMovies() {
+      this.isLoading = true;
       // 보관함 목록을 가져오는 API 요청 함수 호출
       await fetch("http://localhost:3000/users/favorites", {
         credentials: "include",
@@ -136,10 +140,12 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.favoriteMovies = data.favorites || [];
-          this.isLoading = false;
         })
         .catch((error) => {
           console.error("보관함 목록 불러오기 오류:", error);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
 
@@ -164,10 +170,14 @@ export default {
         .catch((error) => {
           console.error("보관함 추가 오류:", error);
           alert("보관함 추가 중 오류가 발생했습니다.");
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
 
-    removeFromFavorites(movieId) {
+    async removeFromFavorites(movieId) {
+      this.isLoading = true;
       // 보관함 삭제 API 요청 함수 호출
       fetch("http://localhost:3000/users/removefavorites", {
         credentials: "include",
@@ -178,9 +188,10 @@ export default {
         body: JSON.stringify({ movieId }),
       })
         .then((response) => response.json())
-        .then((data) => {
+        .then(async (data) => {
           if (data.favorites) {
-            this.favoriteMovies = this.loadFavoriteMovies();
+            await this.loadFavoriteMovies();
+            console.log("after del",this.favoriteMovies);
             alert(data.message || "보관함에서 삭제되었습니다.");
           } else {
             alert(data.message || "보관함 삭제에 실패하였습니다.");
@@ -189,7 +200,11 @@ export default {
         .catch((error) => {
           console.error("보관함 삭제 오류:", error);
           alert("보관함 삭제 중 오류가 발생했습니다.");
-        });
+        })
+        .finally(()=>{
+          this.isLoading = false
+        }
+        );
     },
   },
 };
