@@ -191,7 +191,7 @@ export default {
         .then(async (data) => {
           if (data.favorites) {
             await this.loadFavoriteMovies();
-            console.log("after del",this.favoriteMovies);
+            console.log("after del", this.favoriteMovies);
             alert(data.message || "보관함에서 삭제되었습니다.");
           } else {
             alert(data.message || "보관함 삭제에 실패하였습니다.");
@@ -201,10 +201,9 @@ export default {
           console.error("보관함 삭제 오류:", error);
           alert("보관함 삭제 중 오류가 발생했습니다.");
         })
-        .finally(()=>{
-          this.isLoading = false
-        }
-        );
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };

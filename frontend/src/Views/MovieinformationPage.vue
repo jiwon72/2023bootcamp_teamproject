@@ -120,8 +120,9 @@
                 @click="toggleGostar"
                 class="info-gostar"
               >
-                <span v-if="!this.gostarActive" class="before-star">☆</span>
-                <span v-else class="after-star">★</span>
+                <span v-if="this.gostarActive" class="after-star">★</span>
+                <span v-else class="before-star">☆</span>
+
               </button>
             </div>
             <table class="info-movie-details">
@@ -403,10 +404,12 @@ export default {
         const favoriteMovies = data.favorites || [];
 
         // 현재 영화가 즐겨찾기 목록에 있는지 확인
-        this.gostarActive = !favoriteMovies.some(
-          (fav) => fav.id === this.movieId
+        const test = favoriteMovies.some(
+          (fav) => fav.id == this.movieId
         );
-        console.log("gotostar:", this.gostarActive);
+        console.log("test",test)
+        this.gostarActive = test;
+        console.log("Favorites:", favoriteMovies);
       } catch (error) {
         console.error("보관함 목록 불러오기 오류:", error);
       }
@@ -455,6 +458,7 @@ export default {
         if (response.ok) {
           const data = await response.json();
           this.gostarActive = false; // ☆ (별) 아이콘 표시
+          alert("보관함에서 삭제되었습니다.");
           console.log("Favorites:", data.favorites);
         } else {
           console.error("Failed to remove from favorites");
